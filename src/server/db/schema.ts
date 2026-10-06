@@ -209,3 +209,56 @@ export const experienceQuestions = pgTable("experience_questions", {
 }, (t) => ({
   pk: index("experience_questions_pk").on(t.experienceId, t.questionId),
 }));
+
+// ---- PHASE 2.1: PLACEMENT INFORMATION ----
+
+export const placementDrives = pgTable("placement_drives", {
+  id: text("id").primaryKey(),
+  companyId: text("company_id")
+    .notNull()
+    .references(() => companies.id, { onDelete: "cascade" }),
+  date: text("date"), 
+  season: text("season"), 
+  status: text("status").notNull().default("Upcoming"),
+  eligibleStudentInformation: text("eligible_student_information"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const driveRoles = pgTable("drive_roles", {
+  id: text("id").primaryKey(),
+  driveId: text("drive_id")
+    .notNull()
+    .references(() => placementDrives.id, { onDelete: "cascade" }),
+  roleId: text("role_id")
+    .notNull()
+    .references(() => roleTitles.id, { onDelete: "cascade" }),
+  location: text("location"),
+  ctc: text("ctc"),
+  employmentType: text("employment_type"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const eligibilityRequirements = pgTable("eligibility_requirements", {
+  id: text("id").primaryKey(),
+  driveRoleId: text("drive_role_id")
+    .notNull()
+    .unique()
+    .references(() => driveRoles.id, { onDelete: "cascade" }),
+  cgpa: text("cgpa"),
+  branches: jsonb("branches").$type<string[]>(),
+  backlog: text("backlog"),
+  otherCriteria: text("other_criteria"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const preparationRequirements = pgTable("preparation_requirements", {
+  id: text("id").primaryKey(),
+  driveRoleId: text("drive_role_id")
+    .notNull()
+    .unique()
+    .references(() => driveRoles.id, { onDelete: "cascade" }),
+  requiredSkills: jsonb("required_skills").$type<string[]>(),
+  suggestedTopics: jsonb("suggested_topics").$type<string[]>(),
+  preparationResources: jsonb("preparation_resources").$type<{ title: string; url?: string }[]>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

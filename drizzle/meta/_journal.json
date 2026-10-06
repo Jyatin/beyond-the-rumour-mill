@@ -36,6 +36,13 @@
       "when": 1791300365532,
       "tag": "0004_opposite_scarlet_witch",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791302678889,
+      "tag": "0005_curly_earthquake",
+      "breakpoints": true
     }
   ]
 }

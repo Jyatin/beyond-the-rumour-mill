@@ -173,6 +173,129 @@ async function main() {
       });
   }
 
+  console.log("Seeding placement information...");
+  
+  // Seed Role Titles
+  const demoRoleTitles = [
+    { id: "rt_google_swe", companyId: "google", title: "Software Engineer" },
+    { id: "rt_google_pm", companyId: "google", title: "Product Manager" },
+  ];
+
+  for (const rt of demoRoleTitles) {
+    await db
+      .insert(schema.roleTitles)
+      .values({ ...rt })
+      .onConflictDoUpdate({
+        target: [schema.roleTitles.id],
+        set: { title: rt.title },
+      });
+  }
+
+  // Seed Placement Drives
+  const demoDrives = [
+    {
+      id: "drive_google_fall_2024",
+      companyId: "google",
+      date: "August 2024",
+      season: "Fall 2024",
+      status: "Upcoming",
+      eligibleStudentInformation: "Pre-final and Final year B.Tech/M.Tech students",
+    },
+    {
+      id: "drive_google_spring_2024",
+      companyId: "google",
+      date: "February 2024",
+      season: "Spring 2024",
+      status: "Completed",
+      eligibleStudentInformation: "Final year B.Tech students",
+    }
+  ];
+
+  for (const d of demoDrives) {
+    await db
+      .insert(schema.placementDrives)
+      .values({ ...d })
+      .onConflictDoUpdate({
+        target: [schema.placementDrives.id],
+        set: { ...d },
+      });
+  }
+
+  // Seed Drive Roles
+  const demoDriveRoles = [
+    {
+      id: "dr_google_swe_fall_2024",
+      driveId: "drive_google_fall_2024",
+      roleId: "rt_google_swe",
+      location: "Bangalore / Hyderabad",
+      ctc: "32 LPA",
+      employmentType: "Full-time",
+    },
+    {
+      id: "dr_google_pm_fall_2024",
+      driveId: "drive_google_fall_2024",
+      roleId: "rt_google_pm",
+      location: "Bangalore",
+      ctc: "35 LPA",
+      employmentType: "Full-time",
+    }
+  ];
+
+  for (const dr of demoDriveRoles) {
+    await db
+      .insert(schema.driveRoles)
+      .values({ ...dr })
+      .onConflictDoUpdate({
+        target: [schema.driveRoles.id],
+        set: { ...dr },
+      });
+  }
+
+  // Seed Eligibility Requirements
+  const demoEligibility = [
+    {
+      id: "er_google_swe_fall_2024",
+      driveRoleId: "dr_google_swe_fall_2024",
+      cgpa: "8.0+",
+      branches: ["Computer Science", "Information Technology", "Electronics"],
+      backlog: "No active backlogs",
+      otherCriteria: "Must have completed Google Coding Assessment",
+    }
+  ];
+
+  for (const er of demoEligibility) {
+    await db
+      .insert(schema.eligibilityRequirements)
+      .values({ ...er })
+      .onConflictDoUpdate({
+        target: [schema.eligibilityRequirements.id],
+        set: { ...er },
+      });
+  }
+
+  // Seed Preparation Requirements
+  const demoPreparation = [
+    {
+      id: "pr_google_swe_fall_2024",
+      driveRoleId: "dr_google_swe_fall_2024",
+      requiredSkills: ["Data Structures", "Algorithms", "System Design"],
+      suggestedTopics: ["Dynamic Programming", "Graphs", "Trees"],
+      preparationResources: [
+        { title: "Google Interview Prep Guide", url: "https://careers.google.com/interview-prep" }
+      ],
+    }
+  ];
+
+  for (const pr of demoPreparation) {
+    await db
+      .insert(schema.preparationRequirements)
+      .values({ ...pr })
+      .onConflictDoUpdate({
+        target: [schema.preparationRequirements.id],
+        set: { ...pr },
+      });
+  }
+
   console.log("Seeding complete! Closing connection...");
   await connection.end();
 }
