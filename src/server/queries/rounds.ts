@@ -1,6 +1,6 @@
 import "server-only";
 
-import { eq, asc } from "drizzle-orm";
+import { eq, inArray, asc } from "drizzle-orm";
 import { db } from "../db";
 import { 
   interviewRounds, 
@@ -27,34 +27,65 @@ export async function getExperienceWithRounds(experienceId: string) {
     .where(eq(interviewRounds.experienceId, experienceId))
     .orderBy(asc(interviewRounds.order));
 
-  // Fetch topics and questions for each round
-  const enrichedRounds = await Promise.all(
-    rounds.map(async (r) => {
-      const rTopics = await db
-        .select({ name: topics.name })
-        .from(roundTopics)
-        .innerJoin(topics, eq(roundTopics.topicId, topics.id))
-        .where(eq(roundTopics.roundId, r.id));
+  if (!rounds || rounds.length === 0) {
+    return [];
+  }
 
-      const rQuestions = await db
-        .select({
-          id: experienceQuestions.id,
-          canonicalId: interviewQuestions.id,
-          text: experienceQuestions.rawText, // Return rawText as text for frontend compatibility
-          order: experienceQuestions.order,
-        })
-        .from(experienceQuestions)
-        .innerJoin(interviewQuestions, eq(experienceQuestions.questionId, interviewQuestions.id))
-        .where(eq(experienceQuestions.roundId, r.id))
-        .orderBy(asc(experienceQuestions.order));
+  const roundIds = rounds.map((r) => r.id);
 
-      return {
-        ...r,
-        topics: rTopics.map((t) => t.name),
-        questions: rQuestions,
-      };
-    })
-  );
+  // Fetch all topics and questions in parallel batch queries
+  const [allTopics, allQuestions] = await Promise.all([
+    db
+      .select({
+        roundId: roundTopics.roundId,
+        name: topics.name,
+      })
+      .from(roundTopics)
+      .innerJoin(topics, eq(roundTopics.topicId, topics.id))
+      .where(inArray(roundTopics.roundId, roundIds)),
+    db
+      .select({
+        roundId: experienceQuestions.roundId,
+        id: experienceQuestions.id,
+        canonicalId: interviewQuestions.id,
+        text: experienceQuestions.rawText, // Return rawText as text for frontend compatibility
+        order: experienceQuestions.order,
+      })
+      .from(experienceQuestions)
+      .innerJoin(interviewQuestions, eq(experienceQuestions.questionId, interviewQuestions.id))
+      .where(inArray(experienceQuestions.roundId, roundIds))
+      .orderBy(asc(experienceQuestions.order)),
+  ]);
 
-  return enrichedRounds;
+  const topicsByRound = new Map<string, string[]>();
+  for (const t of allTopics) {
+    if (!topicsByRound.has(t.roundId)) {
+      topicsByRound.set(t.roundId, []);
+    }
+    topicsByRound.get(t.roundId)!.push(t.name);
+  }
+
+  const questionsByRound = new Map<
+    string,
+    Array<{ id: string; canonicalId: string; text: string; order: number }>
+  >();
+  for (const q of allQuestions) {
+    if (q.roundId) {
+      if (!questionsByRound.has(q.roundId)) {
+        questionsByRound.set(q.roundId, []);
+      }
+      questionsByRound.get(q.roundId)!.push({
+        id: q.id,
+        canonicalId: q.canonicalId,
+        text: q.text,
+        order: q.order,
+      });
+    }
+  }
+
+  return rounds.map((r) => ({
+    ...r,
+    topics: topicsByRound.get(r.id) || [],
+    questions: questionsByRound.get(r.id) || [],
+  }));
 }

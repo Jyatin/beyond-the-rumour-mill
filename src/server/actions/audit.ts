@@ -6,18 +6,20 @@ export async function createAuditRecord({
   action,
   entityType,
   entityId,
+  actorId,
   metadata,
 }: {
   action: string;
   entityType: string;
   entityId: string;
+  actorId?: string;
   metadata?: Record<string, unknown>;
 }) {
-  const user = await requireUser().catch(() => null);
+  const resolvedActorId = actorId || (await requireUser().catch(() => null))?.id;
 
   await db.insert(auditLog).values({
     id: `audit_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-    actorId: user?.id,
+    actorId: resolvedActorId,
     action,
     entityType,
     entityId,

@@ -29,8 +29,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CompanyLogo } from "@/components/ui/company-logo";
-import { createExperienceAction, updateExperienceAction, submitExperienceAction } from "@/server/actions/experiences";
-import { updateExperienceRoundsAction } from "@/server/actions/rounds";
+import { saveFullExperienceAction } from "@/server/actions/experiences";
 import { uploadCvAction, toggleCvSharingAction, deleteCvAction } from "@/server/actions/cv";
 
 // ==========================================
@@ -171,7 +170,8 @@ const PREPARATION_CATEGORIES = [
 export function ExperienceForm({ initialData, mode = "create", companies = [], initialCv = null }) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = React.useState(1);
-  const [loading, setLoading] = React.useState(false);
+  const [submittingAction, setSubmittingAction] = React.useState(null); // 'draft' | 'published' | null
+  const loading = submittingAction !== null;
   const [error, setError] = React.useState("");
 
   // Available companies (combine props + fallback defaults)
@@ -567,7 +567,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
   // Submit Handler (Draft or Published)
   const handleSubmit = async (targetStatus = "published") => {
     setError("");
-    setLoading(true);
+    setSubmittingAction(targetStatus);
     setSaveSuccess(false);
 
     try {
@@ -593,31 +593,18 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
         content: compiledContent,
         outcome: formData.outcome,
         timeline: `Cycle: ${formData.hiringCycle} | ${formData.month} ${formData.year}`,
-        status: targetStatus === "published" ? "draft" : "draft", // initial insert creates draft then submits
+        status: targetStatus === "published" ? "draft" : "draft",
       };
 
-      let result;
-      if (mode === "create") {
-        result = await createExperienceAction(payload);
-      } else {
-        result = await updateExperienceAction(initialData.id, payload);
-      }
+      const result = await saveFullExperienceAction({
+        id: mode === "edit" ? initialData?.id : undefined,
+        data: payload,
+        rounds: normalizedRounds,
+        targetStatus,
+      });
 
       const expId = result?.id || initialData?.id;
       if (!expId) throw new Error("Could not obtain experience ID");
-
-      // Save structured normalized rounds
-      if (normalizedRounds.length > 0) {
-        await updateExperienceRoundsAction({
-          experienceId: expId,
-          rounds: normalizedRounds,
-        });
-      }
-
-      // If user wants to publish immediately, trigger submit action
-      if (targetStatus === "published") {
-        await submitExperienceAction(expId);
-      }
 
       // Clean local storage draft
       try {
@@ -631,7 +618,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
     } catch (err) {
       setError(err.message || "Failed to submit experience. Please verify required fields.");
     } finally {
-      setLoading(false);
+      setSubmittingAction(null);
     }
   };
 
@@ -2693,7 +2680,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
             disabled={loading}
             className="text-xs rounded-full px-5 h-10 border-[#ECEAE5] hover:bg-[#FAF7F3] font-semibold text-[#111111] flex-1 sm:flex-initial"
           >
-            {loading ? <Loader2 className="size-3.5 animate-spin mr-1.5" /> : null}
+            {submittingAction === "draft" ? <Loader2 className="size-3.5 animate-spin mr-1.5" /> : null}
             Save Draft
           </Button>
 
@@ -2713,7 +2700,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
               disabled={loading}
               className="gap-2 text-xs rounded-full px-7 h-10 bg-[#17563F] hover:bg-[#134633] text-white font-semibold shadow-xs flex-1 sm:flex-initial transition-all hover:scale-102"
             >
-              {loading ? <Loader2 className="size-3.5 animate-spin mr-1.5" /> : null}
+              {submittingAction === "published" ? <Loader2 className="size-3.5 animate-spin mr-1.5" /> : null}
               {mode === "create" ? "Submit Verified Experience" : "Save and Submit"}
             </Button>
           )}
