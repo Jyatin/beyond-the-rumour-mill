@@ -7,7 +7,7 @@ import {
   auditLog 
 } from "@/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
-import { createExperienceAction, submitExperienceAction } from "@/server/actions/experiences";
+import { createExperienceAction, submitExperienceAction, saveFullExperienceAction } from "@/server/actions/experiences";
 import { updateExperienceRoundsAction } from "@/server/actions/rounds";
 import { uploadCvAction, toggleCvSharingAction } from "@/server/actions/cv";
 import { getExperienceById } from "@/server/queries/experiences";
@@ -490,5 +490,67 @@ describe("Alumni Interview Experience Form & Multi-Step Architecture", { timeout
     const logs = await db.select().from(auditLog).where(eq(auditLog.entityId, expRes.id));
     expect(logs.length).toBeGreaterThan(0);
     expect(logs[0].action).toBe("experience_submitted");
+  });
+
+  it("10. submits complete experience via saveFullExperienceAction with full rounds & questions", async () => {
+    mockState.user = alumniUser;
+
+    const payload = {
+      companyId: testCompanyId,
+      companyName: "Google",
+      role: "Software Development Engineer (SDE 1)",
+      year: 2026,
+      type: "Full-time",
+      rounds: 3,
+      difficulty: "Medium",
+      studentName: "Alumni Contributor",
+      isAnonymous: false,
+      summary: "Full submission test summary",
+      content: "Detailed experience content with rounds and recommendations.",
+      outcome: "Offer",
+      timeline: "Cycle: On-Campus | August 2026",
+      status: "draft" as const,
+    };
+
+    const rounds = [
+      {
+        roundTypeName: "DSA / Coding",
+        title: "DSA Round",
+        summary: "Live coding on binary trees",
+        difficulty: "Medium",
+        topics: ["Trees", "Binary Search"],
+        questions: [
+          { text: "Find Lowest Common Ancestor", topic: "Trees", difficulty: "Medium" }
+        ],
+      },
+      {
+        roundTypeName: "Technical Interview",
+        title: "Core CS Fundamentals: DBMS",
+        summary: "Conceptual questions on ACID and Normalization",
+        difficulty: "Medium",
+        topics: ["Normalization", "ACID Properties"],
+        questions: [
+          { text: "Explain B-Trees vs B+ Trees", topic: "Normalization", difficulty: "Medium" }
+        ],
+      }
+    ];
+
+    const result = await saveFullExperienceAction({
+      data: payload,
+      rounds,
+      targetStatus: "published",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.id).toBeDefined();
+
+    const saved = await getExperienceById(result.id);
+    expect(saved).toBeDefined();
+    expect(saved?.status).toBe("pending");
+
+    const savedRounds = await getExperienceWithRounds(result.id);
+    expect(savedRounds.length).toBe(2);
+    expect(savedRounds[0].questions.length).toBe(1);
+    expect(savedRounds[0].questions[0].canonicalText).toBe("Find Lowest Common Ancestor");
   });
 });

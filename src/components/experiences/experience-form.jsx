@@ -167,12 +167,44 @@ const PREPARATION_CATEGORIES = [
   "Other",
 ];
 
+const makeKey = (prefix = "k") => `${prefix}_${Math.random().toString(36).substring(2, 9)}`;
+
+const ensureKeys = (data) => {
+  if (!data) return data;
+  if (Array.isArray(data.oaQuestions)) {
+    data.oaQuestions = data.oaQuestions.map((q, i) => ({ ...q, _key: q._key || makeKey(`oa_${i}`) }));
+  }
+  if (Array.isArray(data.dsaQuestions)) {
+    data.dsaQuestions = data.dsaQuestions.map((q, i) => ({ ...q, _key: q._key || makeKey(`dsa_${i}`) }));
+  }
+  if (data.fundamentalsData && typeof data.fundamentalsData === "object") {
+    for (const subj of Object.keys(data.fundamentalsData)) {
+      if (Array.isArray(data.fundamentalsData[subj]?.questions)) {
+        data.fundamentalsData[subj].questions = data.fundamentalsData[subj].questions.map((q, i) => ({
+          ...q,
+          _key: q._key || makeKey(`fund_${subj}_${i}`)
+        }));
+      }
+    }
+  }
+  if (Array.isArray(data.technicalRounds)) {
+    data.technicalRounds = data.technicalRounds.map((r, i) => ({
+      ...r,
+      _key: r._key || makeKey(`tr_${i}`),
+      questions: (r.questions || []).map((q, qi) => ({ ...q, _key: q._key || makeKey(`tr_q_${i}_${qi}`) }))
+    }));
+  }
+  return data;
+};
+
 export function ExperienceForm({ initialData, mode = "create", companies = [], initialCv = null }) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = React.useState(1);
   const [submittingAction, setSubmittingAction] = React.useState(null); // 'draft' | 'published' | null
   const loading = submittingAction !== null;
   const [error, setError] = React.useState("");
+  const [saveSuccess, setSaveSuccess] = React.useState(false);
+  const [savedExperienceId, setSavedExperienceId] = React.useState(initialData?.id || null);
 
   // Available companies (combine props + fallback defaults)
   const allCompanies = React.useMemo(() => {
@@ -326,7 +358,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed && typeof parsed === "object") {
-            return { ...defaultData, ...parsed };
+            return ensureKeys({ ...defaultData, ...parsed });
           }
         }
       } catch {
@@ -334,7 +366,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
       }
     }
 
-    return defaultData;
+    return ensureKeys(defaultData);
   });
 
   // CV State
@@ -596,15 +628,21 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
         status: targetStatus === "published" ? "draft" : "draft",
       };
 
+      const expIdToUse = savedExperienceId || (mode === "edit" ? initialData?.id : undefined);
+
       const result = await saveFullExperienceAction({
-        id: mode === "edit" ? initialData?.id : undefined,
+        id: expIdToUse,
         data: payload,
         rounds: normalizedRounds,
         targetStatus,
       });
 
-      const expId = result?.id || initialData?.id;
+      const expId = result?.id || expIdToUse || initialData?.id;
       if (!expId) throw new Error("Could not obtain experience ID");
+
+      if (result?.id) {
+        setSavedExperienceId(result.id);
+      }
 
       // Clean local storage draft
       try {
@@ -617,7 +655,6 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
       router.push(`/experiences/${expId}`);
     } catch (err) {
       setError(err.message || "Failed to submit experience. Please verify required fields.");
-    } finally {
       setSubmittingAction(null);
     }
   };
@@ -1242,7 +1279,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                     onClick={() => {
                       handleFieldChange("oaQuestions", [
                         ...formData.oaQuestions,
-                        { text: "", topic: formData.oaTopics[0] || "Arrays", difficulty: formData.oaDifficulty || "Medium" }
+                        { _key: makeKey("oa"), text: "", topic: formData.oaTopics[0] || "Arrays", difficulty: formData.oaDifficulty || "Medium" }
                       ]);
                     }}
                   >
@@ -1252,13 +1289,11 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                 </div>
 
                 {formData.oaQuestions.map((q, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl border bg-muted/20 space-y-3 relative">
+                  <div key={q._key || q.id || idx} className="p-3.5 rounded-xl border bg-muted/20 space-y-3 relative">
                     <button
                       type="button"
                       onClick={() => {
-                        const updated = [...formData.oaQuestions];
-                        updated.splice(idx, 1);
-                        handleFieldChange("oaQuestions", updated);
+                        handleFieldChange("oaQuestions", formData.oaQuestions.filter((_, i) => i !== idx));
                       }}
                       className="absolute top-3 right-3 text-xs text-red-500 hover:text-red-700 font-medium"
                     >
@@ -1271,10 +1306,10 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                           type="text"
                           value={q.text}
                           onChange={(e) => {
-                            const updated = [...formData.oaQuestions];
-                            updated[idx].text = e.target.value;
-                            handleFieldChange("oaQuestions", updated);
+                            const val = e.target.value;
+                            handleFieldChange("oaQuestions", formData.oaQuestions.map((item, i) => i === idx ? { ...item, text: val } : item));
                           }}
+                          onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                           placeholder="e.g. Find subarray with target sum"
                           className="w-full rounded-md border bg-background px-3 py-1.5 text-xs focus:ring-2 focus:ring-primary outline-none"
                         />
@@ -1285,10 +1320,10 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                           type="text"
                           value={q.topic}
                           onChange={(e) => {
-                            const updated = [...formData.oaQuestions];
-                            updated[idx].topic = e.target.value;
-                            handleFieldChange("oaQuestions", updated);
+                            const val = e.target.value;
+                            handleFieldChange("oaQuestions", formData.oaQuestions.map((item, i) => i === idx ? { ...item, topic: val } : item));
                           }}
+                          onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                           placeholder="e.g. Arrays, Strings"
                           className="w-full rounded-md border bg-background px-3 py-1.5 text-xs focus:ring-2 focus:ring-primary outline-none"
                         />
@@ -1298,9 +1333,8 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                         <select
                           value={q.difficulty}
                           onChange={(e) => {
-                            const updated = [...formData.oaQuestions];
-                            updated[idx].difficulty = e.target.value;
-                            handleFieldChange("oaQuestions", updated);
+                            const val = e.target.value;
+                            handleFieldChange("oaQuestions", formData.oaQuestions.map((item, i) => i === idx ? { ...item, difficulty: val } : item));
                           }}
                           className="w-full rounded-md border bg-background px-3 py-1.5 text-xs focus:ring-2 focus:ring-primary outline-none"
                         >
@@ -1448,7 +1482,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                     onClick={() => {
                       handleFieldChange("dsaQuestions", [
                         ...formData.dsaQuestions,
-                        { text: "", topic: formData.dsaTopics[0] || "Trees", difficulty: formData.dsaDifficulty || "Medium" }
+                        { _key: makeKey("dsa"), text: "", topic: formData.dsaTopics[0] || "Trees", difficulty: formData.dsaDifficulty || "Medium" }
                       ]);
                     }}
                   >
@@ -1458,13 +1492,11 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                 </div>
 
                 {formData.dsaQuestions.map((q, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl border bg-muted/20 space-y-3 relative">
+                  <div key={q._key || q.id || idx} className="p-3.5 rounded-xl border bg-muted/20 space-y-3 relative">
                     <button
                       type="button"
                       onClick={() => {
-                        const updated = [...formData.dsaQuestions];
-                        updated.splice(idx, 1);
-                        handleFieldChange("dsaQuestions", updated);
+                        handleFieldChange("dsaQuestions", formData.dsaQuestions.filter((_, i) => i !== idx));
                       }}
                       className="absolute top-3 right-3 text-xs text-red-500 hover:text-red-700 font-medium"
                     >
@@ -1477,10 +1509,10 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                           type="text"
                           value={q.text}
                           onChange={(e) => {
-                            const updated = [...formData.dsaQuestions];
-                            updated[idx].text = e.target.value;
-                            handleFieldChange("dsaQuestions", updated);
+                            const val = e.target.value;
+                            handleFieldChange("dsaQuestions", formData.dsaQuestions.map((item, i) => i === idx ? { ...item, text: val } : item));
                           }}
+                          onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                           placeholder="e.g. Lowest Common Ancestor in Binary Tree"
                           className="w-full rounded-md border bg-background px-3 py-1.5 text-xs focus:ring-2 focus:ring-primary outline-none"
                         />
@@ -1491,10 +1523,10 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                           type="text"
                           value={q.topic}
                           onChange={(e) => {
-                            const updated = [...formData.dsaQuestions];
-                            updated[idx].topic = e.target.value;
-                            handleFieldChange("dsaQuestions", updated);
+                            const val = e.target.value;
+                            handleFieldChange("dsaQuestions", formData.dsaQuestions.map((item, i) => i === idx ? { ...item, topic: val } : item));
                           }}
+                          onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                           placeholder="e.g. Trees, Dynamic Programming"
                           className="w-full rounded-md border bg-background px-3 py-1.5 text-xs focus:ring-2 focus:ring-primary outline-none"
                         />
@@ -1504,9 +1536,8 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                         <select
                           value={q.difficulty}
                           onChange={(e) => {
-                            const updated = [...formData.dsaQuestions];
-                            updated[idx].difficulty = e.target.value;
-                            handleFieldChange("dsaQuestions", updated);
+                            const val = e.target.value;
+                            handleFieldChange("dsaQuestions", formData.dsaQuestions.map((item, i) => i === idx ? { ...item, difficulty: val } : item));
                           }}
                           className="w-full rounded-md border bg-background px-3 py-1.5 text-xs focus:ring-2 focus:ring-primary outline-none"
                         >
@@ -1672,13 +1703,15 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                           className="h-7 text-xs gap-1"
                           onClick={() => {
                             const currentQuestions = data.questions || [];
-                            const updated = { ...formData.fundamentalsData };
-                            updated[subj] = {
-                              ...data,
-                              questions: [
-                                ...currentQuestions,
-                                { text: "", topic: (data.topics && data.topics[0]) || subj, difficulty: data.difficulty || "Medium" }
-                              ]
+                            const updated = {
+                              ...formData.fundamentalsData,
+                              [subj]: {
+                                ...data,
+                                questions: [
+                                  ...currentQuestions,
+                                  { _key: makeKey("fund"), text: "", topic: (data.topics && data.topics[0]) || subj, difficulty: data.difficulty || "Medium" }
+                                ]
+                              }
                             };
                             handleFieldChange("fundamentalsData", updated);
                           }}
@@ -1689,18 +1722,20 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                       </div>
 
                       {(data.questions || []).map((q, qIdx) => (
-                        <div key={qIdx} className="grid grid-cols-1 md:grid-cols-12 gap-2 p-2.5 rounded-lg border bg-background relative items-center">
+                        <div key={q._key || q.id || qIdx} className="grid grid-cols-1 md:grid-cols-12 gap-2 p-2.5 rounded-lg border bg-background relative items-center">
                           <div className="md:col-span-6">
                             <input
                               type="text"
                               value={q.text}
                               onChange={(e) => {
-                                const currentQuestions = [...(data.questions || [])];
-                                currentQuestions[qIdx].text = e.target.value;
-                                const updated = { ...formData.fundamentalsData };
-                                updated[subj] = { ...data, questions: currentQuestions };
-                                handleFieldChange("fundamentalsData", updated);
+                                const val = e.target.value;
+                                const updatedQuestions = (data.questions || []).map((item, qi) => qi === qIdx ? { ...item, text: val } : item);
+                                handleFieldChange("fundamentalsData", {
+                                  ...formData.fundamentalsData,
+                                  [subj]: { ...data, questions: updatedQuestions }
+                                });
                               }}
+                              onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                               placeholder={`e.g. Explain ACID properties in detail`}
                               className="w-full rounded border bg-background px-2.5 py-1 text-xs focus:ring-1 focus:ring-primary outline-none"
                             />
@@ -1710,12 +1745,14 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                               type="text"
                               value={q.topic}
                               onChange={(e) => {
-                                const currentQuestions = [...(data.questions || [])];
-                                currentQuestions[qIdx].topic = e.target.value;
-                                const updated = { ...formData.fundamentalsData };
-                                updated[subj] = { ...data, questions: currentQuestions };
-                                handleFieldChange("fundamentalsData", updated);
+                                const val = e.target.value;
+                                const updatedQuestions = (data.questions || []).map((item, qi) => qi === qIdx ? { ...item, topic: val } : item);
+                                handleFieldChange("fundamentalsData", {
+                                  ...formData.fundamentalsData,
+                                  [subj]: { ...data, questions: updatedQuestions }
+                                });
                               }}
+                              onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                               placeholder="Topic"
                               className="w-full rounded border bg-background px-2.5 py-1 text-xs focus:ring-1 focus:ring-primary outline-none"
                             />
@@ -1724,11 +1761,12 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                             <select
                               value={q.difficulty}
                               onChange={(e) => {
-                                const currentQuestions = [...(data.questions || [])];
-                                currentQuestions[qIdx].difficulty = e.target.value;
-                                const updated = { ...formData.fundamentalsData };
-                                updated[subj] = { ...data, questions: currentQuestions };
-                                handleFieldChange("fundamentalsData", updated);
+                                const val = e.target.value;
+                                const updatedQuestions = (data.questions || []).map((item, qi) => qi === qIdx ? { ...item, difficulty: val } : item);
+                                handleFieldChange("fundamentalsData", {
+                                  ...formData.fundamentalsData,
+                                  [subj]: { ...data, questions: updatedQuestions }
+                                });
                               }}
                               className="w-full rounded border bg-background px-2.5 py-1 text-xs outline-none"
                             >
@@ -1741,11 +1779,11 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                             <button
                               type="button"
                               onClick={() => {
-                                const currentQuestions = [...(data.questions || [])];
-                                currentQuestions.splice(qIdx, 1);
-                                const updated = { ...formData.fundamentalsData };
-                                updated[subj] = { ...data, questions: currentQuestions };
-                                handleFieldChange("fundamentalsData", updated);
+                                const updatedQuestions = (data.questions || []).filter((_, qi) => qi !== qIdx);
+                                handleFieldChange("fundamentalsData", {
+                                  ...formData.fundamentalsData,
+                                  [subj]: { ...data, questions: updatedQuestions }
+                                });
                               }}
                               className="text-red-500 hover:text-red-700"
                             >
@@ -1785,6 +1823,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                 handleFieldChange("technicalRounds", [
                   ...formData.technicalRounds,
                   {
+                    _key: makeKey("tr"),
                     roundTypeName: "Technical Interview",
                     title: `Round ${nextIndex}: Technical Interview`,
                     duration: "45 mins",
@@ -1813,7 +1852,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
 
           <div className="space-y-6">
             {formData.technicalRounds.map((round, rIdx) => (
-              <div key={rIdx} className="p-5 sm:p-6 rounded-2xl border bg-muted/20 space-y-5 relative">
+              <div key={round._key || round.id || rIdx} className="p-5 sm:p-6 rounded-2xl border bg-muted/20 space-y-5 relative">
                 {/* Round Header & Controls */}
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-3">
                   <div className="flex items-center gap-2">
@@ -1864,9 +1903,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                     <button
                       type="button"
                       onClick={() => {
-                        const updated = [...formData.technicalRounds];
-                        updated.splice(rIdx, 1);
-                        handleFieldChange("technicalRounds", updated);
+                        handleFieldChange("technicalRounds", formData.technicalRounds.filter((_, i) => i !== rIdx));
                       }}
                       className="p-1.5 rounded border bg-background text-red-500 hover:text-red-700 ml-1"
                       title="Remove Round"
@@ -1883,9 +1920,8 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                     <select
                       value={round.roundTypeName}
                       onChange={(e) => {
-                        const updated = [...formData.technicalRounds];
-                        updated[rIdx].roundTypeName = e.target.value;
-                        handleFieldChange("technicalRounds", updated);
+                        const val = e.target.value;
+                        handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => i === rIdx ? { ...r, roundTypeName: val } : r));
                       }}
                       className="w-full rounded-lg border bg-background px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none"
                     >
@@ -1899,10 +1935,10 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                       type="text"
                       value={round.title}
                       onChange={(e) => {
-                        const updated = [...formData.technicalRounds];
-                        updated[rIdx].title = e.target.value;
-                        handleFieldChange("technicalRounds", updated);
+                        const val = e.target.value;
+                        handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => i === rIdx ? { ...r, title: val } : r));
                       }}
+                      onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                       placeholder="e.g. Round 2: System Design & Live Coding"
                       className="w-full rounded-lg border bg-background px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none"
                     />
@@ -1917,10 +1953,10 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                       type="text"
                       value={round.duration}
                       onChange={(e) => {
-                        const updated = [...formData.technicalRounds];
-                        updated[rIdx].duration = e.target.value;
-                        handleFieldChange("technicalRounds", updated);
+                        const val = e.target.value;
+                        handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => i === rIdx ? { ...r, duration: val } : r));
                       }}
+                      onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                       placeholder="e.g. 45 mins, 1 hour"
                       className="w-full rounded-lg border bg-background px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none"
                     />
@@ -1931,9 +1967,8 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                     <select
                       value={round.difficulty}
                       onChange={(e) => {
-                        const updated = [...formData.technicalRounds];
-                        updated[rIdx].difficulty = e.target.value;
-                        handleFieldChange("technicalRounds", updated);
+                        const val = e.target.value;
+                        handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => i === rIdx ? { ...r, difficulty: val } : r));
                       }}
                       className="w-full rounded-lg border bg-background px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none"
                     >
@@ -1949,10 +1984,11 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                       type="text"
                       value={(round.topics || []).join(", ")}
                       onChange={(e) => {
-                        const updated = [...formData.technicalRounds];
-                        updated[rIdx].topics = e.target.value.split(",").map(t => t.trim()).filter(Boolean);
-                        handleFieldChange("technicalRounds", updated);
+                        const raw = e.target.value;
+                        const parsedTopics = raw.split(",").map(t => t.trim()).filter(Boolean);
+                        handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => i === rIdx ? { ...r, topics: parsedTopics } : r));
                       }}
+                      onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                       placeholder="e.g. Redis, Kafka, Microservices"
                       className="w-full rounded-lg border bg-background px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none"
                     />
@@ -2088,12 +2124,14 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                       size="sm"
                       className="h-7 text-xs gap-1"
                       onClick={() => {
-                        const updated = [...formData.technicalRounds];
-                        updated[rIdx].questions = [
-                          ...(updated[rIdx].questions || []),
-                          { text: "", topic: (round.topics && round.topics[0]) || round.roundTypeName || "General", difficulty: round.difficulty || "Medium" }
-                        ];
-                        handleFieldChange("technicalRounds", updated);
+                        handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => {
+                          if (i !== rIdx) return r;
+                          const currentQuestions = [
+                            ...(r.questions || []),
+                            { _key: makeKey("tr_q"), text: "", topic: (r.topics && r.topics[0]) || r.roundTypeName || "General", difficulty: r.difficulty || "Medium" }
+                          ];
+                          return { ...r, questions: currentQuestions };
+                        }));
                       }}
                     >
                       <Plus className="size-3" />
@@ -2102,16 +2140,20 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                   </div>
 
                   {(round.questions || []).map((q, qIdx) => (
-                    <div key={qIdx} className="grid grid-cols-1 md:grid-cols-12 gap-2 p-2.5 rounded-lg border bg-background relative items-center">
+                    <div key={q._key || q.id || qIdx} className="grid grid-cols-1 md:grid-cols-12 gap-2 p-2.5 rounded-lg border bg-background relative items-center">
                       <div className="md:col-span-6">
                         <input
                           type="text"
                           value={q.text}
                           onChange={(e) => {
-                            const updated = [...formData.technicalRounds];
-                            updated[rIdx].questions[qIdx].text = e.target.value;
-                            handleFieldChange("technicalRounds", updated);
+                            const val = e.target.value;
+                            handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => {
+                              if (i !== rIdx) return r;
+                              const qList = (r.questions || []).map((item, qi) => qi === qIdx ? { ...item, text: val } : item);
+                              return { ...r, questions: qList };
+                            }));
                           }}
+                          onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                           placeholder="Question text"
                           className="w-full rounded border bg-background px-2.5 py-1 text-xs focus:ring-1 focus:ring-primary outline-none"
                         />
@@ -2121,10 +2163,14 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                           type="text"
                           value={q.topic}
                           onChange={(e) => {
-                            const updated = [...formData.technicalRounds];
-                            updated[rIdx].questions[qIdx].topic = e.target.value;
-                            handleFieldChange("technicalRounds", updated);
+                            const val = e.target.value;
+                            handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => {
+                              if (i !== rIdx) return r;
+                              const qList = (r.questions || []).map((item, qi) => qi === qIdx ? { ...item, topic: val } : item);
+                              return { ...r, questions: qList };
+                            }));
                           }}
+                          onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                           placeholder="Topic"
                           className="w-full rounded border bg-background px-2.5 py-1 text-xs focus:ring-1 focus:ring-primary outline-none"
                         />
@@ -2133,9 +2179,12 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                         <select
                           value={q.difficulty}
                           onChange={(e) => {
-                            const updated = [...formData.technicalRounds];
-                            updated[rIdx].questions[qIdx].difficulty = e.target.value;
-                            handleFieldChange("technicalRounds", updated);
+                            const val = e.target.value;
+                            handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => {
+                              if (i !== rIdx) return r;
+                              const qList = (r.questions || []).map((item, qi) => qi === qIdx ? { ...item, difficulty: val } : item);
+                              return { ...r, questions: qList };
+                            }));
                           }}
                           className="w-full rounded border bg-background px-2.5 py-1 text-xs outline-none"
                         >
@@ -2148,9 +2197,11 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
                         <button
                           type="button"
                           onClick={() => {
-                            const updated = [...formData.technicalRounds];
-                            updated[rIdx].questions.splice(qIdx, 1);
-                            handleFieldChange("technicalRounds", updated);
+                            handleFieldChange("technicalRounds", formData.technicalRounds.map((r, i) => {
+                              if (i !== rIdx) return r;
+                              const qList = (r.questions || []).filter((_, qi) => qi !== qIdx);
+                              return { ...r, questions: qList };
+                            }));
                           }}
                           className="text-red-500 hover:text-red-700"
                         >
@@ -2653,6 +2704,31 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
         </div>
       )}
 
+      {/* In-Context Error Banner for Step 10 & Critical Actions */}
+      {error && currentStep === 10 && (
+        <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 text-sm flex items-start gap-3 animate-in fade-in duration-200">
+          <AlertCircle className="size-5 text-red-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-semibold">Submission Incomplete</div>
+            <div>{error}</div>
+            <div className="text-xs text-red-700 dark:text-red-400 mt-1">
+              Your entries have been preserved. You can review the details above and retry submitting.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* In-Context Success Banner */}
+      {saveSuccess && (
+        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-300 text-sm flex items-start gap-3 animate-in fade-in duration-200">
+          <CheckCircle2 className="size-5 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-semibold">Experience Submitted Successfully!</div>
+            <div>Your interview experience has been securely saved and submitted for moderation. Redirecting to your experience page...</div>
+          </div>
+        </div>
+      )}
+
       {/* ============================================================ */}
       {/* BOTTOM ACTION BAR */}
       {/* ============================================================ */}
@@ -2663,7 +2739,7 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
               type="button"
               variant="outline"
               onClick={handleBack}
-              disabled={loading}
+              disabled={loading || saveSuccess}
               className="gap-2 text-xs rounded-full px-5 h-10 border-[#ECEAE5] hover:bg-[#FAF7F3] font-semibold text-[#111111]"
             >
               <ChevronLeft className="size-4" />
@@ -2677,11 +2753,11 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
             type="button"
             variant="outline"
             onClick={() => handleSubmit("draft")}
-            disabled={loading}
+            disabled={loading || saveSuccess}
             className="text-xs rounded-full px-5 h-10 border-[#ECEAE5] hover:bg-[#FAF7F3] font-semibold text-[#111111] flex-1 sm:flex-initial"
           >
             {submittingAction === "draft" ? <Loader2 className="size-3.5 animate-spin mr-1.5" /> : null}
-            Save Draft
+            {submittingAction === "draft" ? "Saving Draft..." : "Save Draft"}
           </Button>
 
           {currentStep < 10 ? (
@@ -2697,11 +2773,22 @@ export function ExperienceForm({ initialData, mode = "create", companies = [], i
             <Button
               type="button"
               onClick={() => handleSubmit("published")}
-              disabled={loading}
+              disabled={loading || saveSuccess}
               className="gap-2 text-xs rounded-full px-7 h-10 bg-[#17563F] hover:bg-[#134633] text-white font-semibold shadow-xs flex-1 sm:flex-initial transition-all hover:scale-102"
             >
-              {submittingAction === "published" ? <Loader2 className="size-3.5 animate-spin mr-1.5" /> : null}
-              {mode === "create" ? "Submit Verified Experience" : "Save and Submit"}
+              {submittingAction === "published" ? (
+                <>
+                  <Loader2 className="size-3.5 animate-spin mr-1.5" />
+                  <span>Submitting Experience...</span>
+                </>
+              ) : saveSuccess ? (
+                <>
+                  <Check className="size-3.5 mr-1.5" />
+                  <span>Redirecting...</span>
+                </>
+              ) : (
+                mode === "create" ? "Submit Verified Experience" : "Save and Submit"
+              )}
             </Button>
           )}
         </div>

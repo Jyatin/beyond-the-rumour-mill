@@ -67,7 +67,7 @@ export async function getExperienceWithRounds(experienceId: string) {
 
   const questionsByRound = new Map<
     string,
-    Array<{ id: string; canonicalId: string; text: string; order: number }>
+    Array<{ id: string; canonicalId: string; text: string; canonicalText?: string; order: number }>
   >();
   for (const q of allQuestions) {
     if (q.roundId) {
@@ -78,6 +78,7 @@ export async function getExperienceWithRounds(experienceId: string) {
         id: q.id,
         canonicalId: q.canonicalId,
         text: q.text,
+        canonicalText: q.text,
         order: q.order,
       });
     }

@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { experiences } from "../db/schema";
+import { experiences, companies } from "../db/schema";
 import { requireUser } from "../auth-helpers";
 import { revalidatePath } from "next/cache";
 import type { roundSchema } from "./rounds";
@@ -29,14 +29,34 @@ export async function createExperienceAction(data: z.infer<typeof experienceSche
   const user = await requireUser();
   const parsed = experienceSchema.parse(data);
 
+  const studentDisplayName = parsed.isAnonymous
+    ? "Anonymous"
+    : (user.name?.trim() || user.email?.split("@")[0] || "Alumni Contributor");
+
   const id = `exp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-  await db.insert(experiences).values({
-    id,
-    ...parsed,
-    authorId: user.id,
-    studentName: parsed.isAnonymous ? "Anonymous" : user.name,
-    verificationStatus: "review",
+  await db.transaction(async (tx) => {
+    // Ensure company exists before referencing it
+    const existingCompany = await tx.select({ id: companies.id }).from(companies).where(eq(companies.id, parsed.companyId)).limit(1);
+    if (!existingCompany[0]) {
+      await tx.insert(companies).values({
+        id: parsed.companyId,
+        name: parsed.companyName || parsed.companyId,
+        industry: "Technology",
+        roles: [parsed.role || "Software Engineer"],
+        verificationStatus: "verified" as const,
+        lastVerifiedAt: new Date().toISOString(),
+        topTopics: [],
+      }).onConflictDoNothing();
+    }
+
+    await tx.insert(experiences).values({
+      id,
+      ...parsed,
+      authorId: user.id,
+      studentName: studentDisplayName,
+      verificationStatus: "review",
+    });
   });
 
   revalidatePath("/experiences");
@@ -58,12 +78,31 @@ export async function updateExperienceAction(id: string, data: z.infer<typeof ex
     throw new Error("Unauthorized to edit this experience");
   }
 
-  await db.update(experiences).set({
-    ...parsed,
-    studentName: parsed.isAnonymous ? "Anonymous" : user.name,
-    status: existing[0].status === "pending" || existing[0].status === "flagged" ? "draft" : existing[0].status,
-    updatedAt: new Date(),
-  }).where(eq(experiences.id, id));
+  const studentDisplayName = parsed.isAnonymous
+    ? "Anonymous"
+    : (user.name?.trim() || user.email?.split("@")[0] || "Alumni Contributor");
+
+  await db.transaction(async (tx) => {
+    const existingCompany = await tx.select({ id: companies.id }).from(companies).where(eq(companies.id, parsed.companyId)).limit(1);
+    if (!existingCompany[0]) {
+      await tx.insert(companies).values({
+        id: parsed.companyId,
+        name: parsed.companyName || parsed.companyId,
+        industry: "Technology",
+        roles: [parsed.role || "Software Engineer"],
+        verificationStatus: "verified" as const,
+        lastVerifiedAt: new Date().toISOString(),
+        topTopics: [],
+      }).onConflictDoNothing();
+    }
+
+    await tx.update(experiences).set({
+      ...parsed,
+      studentName: studentDisplayName,
+      status: existing[0].status === "pending" || existing[0].status === "flagged" ? "draft" : existing[0].status,
+      updatedAt: new Date(),
+    }).where(eq(experiences.id, id));
+  });
 
   revalidatePath("/experiences");
   revalidatePath(`/experiences/${id}`);
@@ -122,47 +161,82 @@ export async function saveFullExperienceAction({
   const user = await requireUser();
   const parsed = experienceSchema.parse(data);
 
+  const studentDisplayName = parsed.isAnonymous
+    ? "Anonymous"
+    : (user.name?.trim() || user.email?.split("@")[0] || "Alumni Contributor");
+
   let expId = id;
   const isCreate = !expId;
-
   if (isCreate) {
     expId = `exp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    await db.insert(experiences).values({
-      id: expId,
-      ...parsed,
-      authorId: user.id,
-      studentName: parsed.isAnonymous ? "Anonymous" : user.name,
-      status: targetStatus === "published" ? "pending" : "draft",
-      verificationStatus: "review",
-    });
-  } else {
-    const existing = await db.select().from(experiences).where(eq(experiences.id, expId!)).limit(1);
-    if (!existing[0]) {
-      throw new Error("Experience not found");
-    }
-    if (existing[0].authorId !== user.id) {
-      throw new Error("Unauthorized to edit this experience");
-    }
-
-    const nextStatus = targetStatus === "published"
-      ? "pending"
-      : (existing[0].status === "pending" || existing[0].status === "flagged" ? "draft" : existing[0].status);
-
-    await db.update(experiences).set({
-      ...parsed,
-      studentName: parsed.isAnonymous ? "Anonymous" : user.name,
-      status: nextStatus,
-      updatedAt: new Date(),
-    }).where(eq(experiences.id, expId!));
   }
 
-  // Save rounds in batch if provided
-  if (rounds && rounds.length > 0) {
-    const { saveExperienceRoundsInternal } = await import("./rounds");
-    await db.transaction(async (tx) => {
+  const { saveExperienceRoundsInternal } = await import("./rounds");
+
+  await db.transaction(async (tx) => {
+    // 1. Ensure company exists before referencing in experiences table
+    const existingCompany = await tx
+      .select({ id: companies.id })
+      .from(companies)
+      .where(eq(companies.id, parsed.companyId))
+      .limit(1);
+
+    if (!existingCompany[0]) {
+      await tx
+        .insert(companies)
+        .values({
+          id: parsed.companyId,
+          name: parsed.companyName || parsed.companyId,
+          industry: "Technology",
+          roles: [parsed.role || "Software Engineer"],
+          verificationStatus: "verified" as const,
+          lastVerifiedAt: new Date().toISOString(),
+          topTopics: [],
+        })
+        .onConflictDoNothing();
+    }
+
+    // 2. Insert or update experience record
+    if (isCreate) {
+      await tx.insert(experiences).values({
+        id: expId!,
+        ...parsed,
+        authorId: user.id,
+        studentName: studentDisplayName,
+        status: targetStatus === "published" ? "pending" : "draft",
+        verificationStatus: "review",
+      });
+    } else {
+      const existing = await tx
+        .select()
+        .from(experiences)
+        .where(eq(experiences.id, expId!))
+        .limit(1);
+
+      if (!existing[0]) {
+        throw new Error("Experience not found");
+      }
+      if (existing[0].authorId !== user.id) {
+        throw new Error("Unauthorized to edit this experience");
+      }
+
+      const nextStatus = targetStatus === "published"
+        ? "pending"
+        : (existing[0].status === "pending" || existing[0].status === "flagged" ? "draft" : existing[0].status);
+
+      await tx.update(experiences).set({
+        ...parsed,
+        studentName: studentDisplayName,
+        status: nextStatus,
+        updatedAt: new Date(),
+      }).where(eq(experiences.id, expId!));
+    }
+
+    // 3. Atomically persist interview rounds & questions in the same transaction
+    if (rounds && rounds.length > 0) {
       await saveExperienceRoundsInternal(tx, expId!, rounds);
-    });
-  }
+    }
+  });
 
   // Record audit if submitted
   if (targetStatus === "published") {
