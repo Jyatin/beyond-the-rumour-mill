@@ -39,7 +39,7 @@ describe("Senior Backend Engineer Audit: PostgreSQL & Full API Suite", { timeout
       const result = await db.execute(sql`SELECT version() as ver, current_database() as db_name, current_user as usr`);
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
-      const row = result[0] as any;
+      const row = result[0] as Record<string, unknown>;
       expect(row.db_name).toBeDefined();
       expect(row.ver).toContain("PostgreSQL");
     });
@@ -51,7 +51,7 @@ describe("Senior Backend Engineer Audit: PostgreSQL & Full API Suite", { timeout
         WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
         ORDER BY table_name;
       `);
-      const tableNames = tables.map((t: any) => t.table_name);
+      const tableNames = tables.map((t: Record<string, unknown>) => t.table_name);
       const expectedTables = [
         "account", "alumni_cvs", "alumni_profiles", "companies", 
         "experiences", "interview_rounds", "placement_drives", 
@@ -122,8 +122,9 @@ describe("Senior Backend Engineer Audit: PostgreSQL & Full API Suite", { timeout
           // Force transaction failure
           throw new Error("Trigger atomic rollback");
         });
-      } catch (err: any) {
-        console.log("TRANSACTION ERROR CAUGHT:", err?.message || err);
+      } catch (err: unknown) {
+        const e = err as Error;
+        console.log("TRANSACTION ERROR CAUGHT:", e?.message || e);
         errorCaught = true;
       }
 
@@ -139,7 +140,7 @@ describe("Senior Backend Engineer Audit: PostgreSQL & Full API Suite", { timeout
         LEFT JOIN experiences e ON ir.experience_id = e.id
         WHERE e.id IS NULL;
       `);
-      expect(Number((orphanedRounds[0] as any).count)).toBe(0);
+      expect(Number((orphanedRounds[0] as Record<string, unknown>).count)).toBe(0);
     });
   });
 
@@ -336,7 +337,7 @@ describe("Senior Backend Engineer Audit: PostgreSQL & Full API Suite", { timeout
         LIMIT 5;
       `);
       expect(results.length).toBeGreaterThan(0);
-      expect((results[0] as any).title).toContain("Amazon");
+      expect((results[0] as Record<string, unknown>).title).toContain("Amazon");
     });
   });
 

@@ -5,7 +5,7 @@ import { sql } from "drizzle-orm";
 async function main() {
   console.log("Checking Neon PostgreSQL connection...");
   const tables = await db.execute(sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name`);
-  console.log("Found tables:", tables.map((t: any) => t.table_name));
+  console.log("Found tables:", tables.map((t: Record<string, unknown>) => t.table_name));
 
   const counts = await db.execute(sql`
     SELECT 'companies' as tbl, count(*)::int as count FROM companies
@@ -18,7 +18,8 @@ async function main() {
   `);
   console.log("Record counts in production database:");
   for (const row of counts) {
-    console.log(`- ${(row as any).tbl}: ${(row as any).count}`);
+    const r = row as Record<string, unknown>;
+    console.log(`- ${r.tbl}: ${r.count}`);
   }
   process.exit(0);
 }
