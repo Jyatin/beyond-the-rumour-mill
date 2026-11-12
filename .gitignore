@@ -20,6 +20,7 @@
 /dist
 
 # misc
+/.storage/
 .DS_Store
 *.pem
 Thumbs.db

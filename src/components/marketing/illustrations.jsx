@@ -78,18 +78,12 @@ export function SubmitExperienceScene({
       <Image src="/assets/desk-interview-notes.png" alt="Student interview submission" width={721} height={440} className="w-full h-auto max-h-[360px] object-contain select-none" />
     </div>;
 }
-export function Stage01Vignette({
-  className
-}) {
+export function Stage01Vignette() {
   return null;
 }
-export function Stage02Vignette({
-  className
-}) {
+export function Stage02Vignette() {
   return null;
 }
-export function Stage03Vignette({
-  className
-}) {
+export function Stage03Vignette() {
   return null;
 }

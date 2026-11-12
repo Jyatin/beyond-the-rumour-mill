@@ -5,22 +5,22 @@ export type NavItem = {
   badge?: string;
 };
 
-// Primary desktop nav matching exact reference
+// Primary desktop nav matching clean minimal IA
 export const primaryNav: NavItem[] = [
-  { label: "Discover", href: "/companies", hasDropdown: true },
-  { label: "Alumni", href: "/connect", hasDropdown: true },
-  { label: "Stories", href: "/experiences", hasDropdown: true },
-  { label: "Resources", href: "/questions", hasDropdown: true },
-  { label: "About", href: "/about" },
+  { label: "Companies", href: "/companies" },
+  { label: "Preparation", href: "/prepare" },
+  { label: "Experiences", href: "/experiences" },
+  { label: "Questions", href: "/questions" },
+  { label: "Alumni", href: "/alumni" },
 ];
 
 export const mobileNav: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Discover", href: "/companies" },
-  { label: "Alumni", href: "/connect" },
-  { label: "Stories", href: "/experiences" },
-  { label: "Resources", href: "/questions" },
-  { label: "About", href: "/about" },
+  { label: "Companies", href: "/companies" },
+  { label: "Preparation", href: "/prepare" },
+  { label: "Experiences", href: "/experiences" },
+  { label: "Questions", href: "/questions" },
+  { label: "Alumni", href: "/alumni" },
   { label: "Sign In", href: "/login" },
   { label: "Sign Up", href: "/signup" },
 ];

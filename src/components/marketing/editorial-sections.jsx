@@ -64,10 +64,10 @@ export function DiscoverySection() {
       </div>
     </section>;
 }
-import { getExperiences } from "@/server/queries/experiences";
+import { getPublishedExperiences } from "@/server/queries/experiences";
 import { getInterviewQuestions } from "@/server/queries/interview-questions";
 export async function EvidenceSection() {
-  const experiences = await getExperiences();
+  const experiences = await getPublishedExperiences();
   return <section className="border-b border-[var(--hairline-soft)] bg-[var(--paper-tint)] py-20 md:py-28 overflow-hidden transition-colors duration-700">
       <div className="mx-auto max-w-[1360px] px-5 md:px-8">
         <Reveal>
@@ -170,36 +170,39 @@ export async function EvidenceSection() {
 export function MetricsSection() {
   const metrics = [{
     value: "64",
-    label: "Documented Experiences",
+    label: "experiences",
     sub: "Rounds & questions intact"
   }, {
-    value: "3",
-    label: "Enterprise Dossiers",
-    sub: "Amazon, Microsoft, Google"
-  }, {
     value: "45",
-    label: "Reported Question Signals",
+    label: "question signals",
     sub: "Logged from live rounds"
   }, {
     value: "2026",
-    label: "Current Season Intel",
-    sub: "Updated this recruitment cycle"
+    label: "data",
+    sub: "Current season placement cycle"
   }];
-  return <section className="border-y border-[var(--hairline-strong)] bg-[#FAFAFA] dark:bg-[var(--surface-elevated)] transition-colors duration-500">
-      <div className="mx-auto grid max-w-[1360px] divide-y divide-[var(--hairline-strong)] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4 px-5 md:px-8">
-        {metrics.map((metric, index) => <Reveal key={metric.label} delay={index % 4}>
-            <div className="px-6 py-10 md:py-12 group hover:bg-white/40 dark:hover:bg-black/20 transition-colors duration-300">
-              <p className="type-display text-[46px] sm:text-[54px] text-[var(--brand-bright)] font-semibold leading-none group-hover:scale-105 transition-transform duration-300 origin-left">
-                {metric.value}
-              </p>
-              <p className="type-display text-[16px] text-[var(--ink)] mt-2 font-medium">
-                {metric.label}
-              </p>
-              <p className="type-caption text-[12px] text-[var(--ink-muted)] mt-1 font-mono">
-                {metric.sub}
-              </p>
-            </div>
-          </Reveal>)}
+  return <section className="border-y border-[var(--hairline-strong)] bg-[#FAFAFA] dark:bg-[var(--surface-elevated)] transition-colors duration-500 py-6">
+      <div className="mx-auto max-w-[1360px] px-5 md:px-8">
+        <div className="mb-4 text-center">
+          <p className="type-data text-[12px] uppercase tracking-[0.2em] text-[var(--brand)] font-semibold font-mono">
+            INTERVIEW INTELLIGENCE
+          </p>
+        </div>
+        <div className="grid divide-y divide-[var(--hairline-strong)] sm:grid-cols-3 sm:divide-x sm:divide-y-0 text-center">
+          {metrics.map((metric, index) => <Reveal key={metric.label} delay={index % 3}>
+              <div className="px-6 py-6 group">
+                <p className="type-display text-[44px] sm:text-[52px] text-[var(--ink)] font-bold leading-none inline-flex items-baseline gap-2">
+                  <span className="text-[var(--brand-bright)]">{metric.value}</span>
+                  <span className="type-body text-[16px] sm:text-[18px] font-medium text-[var(--ink)] lowercase">
+                    {metric.label}
+                  </span>
+                </p>
+                <p className="type-caption text-[12px] text-[var(--ink-muted)] mt-1.5 font-mono">
+                  {metric.sub}
+                </p>
+              </div>
+            </Reveal>)}
+        </div>
       </div>
     </section>;
 }

@@ -54,3 +54,28 @@ export async function updateProfile(data: Partial<Omit<typeof profiles.$inferIns
   const currentUser = await requireUser();
   return updateProfileImpl(currentUser, data);
 }
+
+export async function upsertMyProfile(
+  data: Omit<typeof profiles.$inferInsert, "id" | "userId" | "createdAt">
+) {
+  const currentUser = await requireUser();
+  const existing = await getProfileByUserId(currentUser.id);
+  if (existing) {
+    const [updated] = await db
+      .update(profiles)
+      .set(data)
+      .where(eq(profiles.userId, currentUser.id))
+      .returning();
+    return updated;
+  }
+
+  const [created] = await db
+    .insert(profiles)
+    .values({
+      id: crypto.randomUUID(),
+      userId: currentUser.id,
+      ...data,
+    })
+    .returning();
+  return created;
+}

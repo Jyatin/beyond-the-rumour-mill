@@ -45,7 +45,7 @@ export function FinalCta() {
                     Explore the archive <ArrowRight className="size-4" />
                   </Link>
                 </Button>
-                <Link href="/experiences/share" className="type-body text-[14.5px] font-medium text-white/90 hover:text-[#E9B9B7] transition-colors border-b border-white/40 pb-0.5 hover:border-[#E9B9B7]">
+                <Link href="/experiences/new" className="type-body text-[14.5px] font-medium text-white/90 hover:text-[#E9B9B7] transition-colors border-b border-white/40 pb-0.5 hover:border-[#E9B9B7]">
                   Share your experience
                 </Link>
               </div>

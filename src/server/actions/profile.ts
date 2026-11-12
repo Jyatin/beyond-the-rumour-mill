@@ -1,6 +1,8 @@
 "use server";
 
-import { createProfile, updateProfile } from "../queries/profiles";
+import { z } from "zod";
+import { createProfile, updateProfile, upsertMyProfile } from "../queries/profiles";
+import { requireUser } from "../auth-helpers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -61,4 +63,43 @@ export async function updateProfileAction(formData: FormData) {
   });
 
   revalidatePath("/profile");
+}
+
+const upsertProfileSchema = z.object({
+  displayName: z.string().trim().min(2, "Display name must be at least 2 characters").max(80),
+  headline: z.string().trim().min(2, "Headline is required").max(160),
+  bio: z.string().trim().min(5, "Bio must be at least 5 characters").max(1000),
+  college: z.string().trim().min(2, "College or university is required").max(160),
+  gradYear: z.coerce.number().int().min(1990, "Invalid graduation year").max(2035, "Invalid graduation year"),
+  openToMentoring: z.boolean().optional().default(false),
+  visibility: z.enum(["public", "private"]).default("public"),
+});
+
+export async function upsertMyProfileAction(input: {
+  displayName: string;
+  headline: string;
+  bio: string;
+  college: string;
+  gradYear: number | string;
+  openToMentoring?: boolean;
+  visibility?: "public" | "private";
+}) {
+  const currentUser = await requireUser();
+  const parsed = upsertProfileSchema.parse(input);
+
+  const canMentor = currentUser.role === "alumni" || currentUser.role === "admin";
+  const saved = await upsertMyProfile({
+    displayName: parsed.displayName,
+    headline: parsed.headline,
+    bio: parsed.bio,
+    college: parsed.college,
+    gradYear: parsed.gradYear,
+    avatarUrl: null,
+    openToMentoring: canMentor ? parsed.openToMentoring : false,
+    visibility: parsed.visibility,
+  });
+
+  revalidatePath("/profile");
+  revalidatePath("/alumni");
+  return { success: true, profile: saved };
 }

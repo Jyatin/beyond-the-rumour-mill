@@ -25,6 +25,6 @@ export function Reveal({
     return () => observer.disconnect();
   }, []);
   return <div ref={ref} className={cn("reveal", visible && "is-visible", delay && `reveal-delay-${delay}`, className)}>
-      {children}
-    </div>;
+    {children}
+  </div>;
 }

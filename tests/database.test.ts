@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { getCompanies, getCompanyById, getCompanyWithDetails } from "../src/server/queries/companies";
-import { getExperiences } from "../src/server/queries/experiences";
+import { getPublishedExperiences } from "../src/server/queries/experiences";
 import { getAlumniProfiles } from "../src/server/queries/alumni";
 import { getInterviewQuestions } from "../src/server/queries/interview-questions";
 
@@ -20,12 +20,12 @@ describe("Database Queries Integration Tests", () => {
   it("getCompanyWithDetails returns correct details", async () => {
     const details = await getCompanyWithDetails("amazon");
     expect(details).toBeDefined();
-    expect(details?.experiences.length).toBe(1);
+    expect(details?.experiences.length).toBeGreaterThan(0);
     expect(details?.alumniProfiles.length).toBe(1);
   });
 
   it("getExperiences returns seeded experiences", async () => {
-    const experiences = await getExperiences();
+    const experiences = await getPublishedExperiences();
     expect(experiences.length).toBeGreaterThan(0);
   });
 

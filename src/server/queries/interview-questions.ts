@@ -5,7 +5,12 @@ import { db } from "../db";
 import { interviewQuestions } from "../db/schema";
 
 export async function getInterviewQuestions() {
-  return await db.select().from(interviewQuestions);
+  try {
+    return await db.select().from(interviewQuestions);
+  } catch (err) {
+    console.error("Failed to fetch interview questions from DB:", err);
+    return [];
+  }
 }
 
 export async function getInterviewQuestionById(id: string) {

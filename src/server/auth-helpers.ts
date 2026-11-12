@@ -29,3 +29,15 @@ export async function requireRole(role: string) {
   }
   return user;
 }
+
+export async function requireAdmin() {
+  return requireRole("admin");
+}
+
+export async function requireTpoOrAdmin() {
+  const user = await requireUser();
+  if (user.role !== "tpo" && user.role !== "admin") {
+    throw new Error("Forbidden: requires TPO coordinator or Admin privileges");
+  }
+  return user;
+}
