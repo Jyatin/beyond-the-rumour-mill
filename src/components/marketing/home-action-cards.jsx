@@ -62,16 +62,16 @@ export async function HomeActionCards() {
   const metrics = await getHomepageMetrics();
 
   return (
-    <section className="relative border-b border-[#EBE4D8] bg-[#FAF7F3] py-14 sm:py-18 md:py-22 overflow-hidden transition-colors duration-500">
+    <section className="relative border-b border-[#EBE4D8] bg-[#FAF7F3] py-10 sm:py-14 md:py-18 overflow-hidden transition-colors duration-500">
       <div className="mx-auto max-w-[1360px] px-4 sm:px-6 md:px-8">
         {/* TOP HEADER BLOCK */}
         <Reveal>
-          <div className="relative text-center max-w-[760px] mx-auto mb-10 sm:mb-12">
+          <div className="relative text-center max-w-[760px] mx-auto mb-7 sm:mb-9">
             {/* Top-left walking stick figure doodle */}
             <HeaderWalkingStickFigures className="absolute -top-6 -left-6 sm:-left-12 size-16 sm:size-20 opacity-80 pointer-events-none hidden xs:block" />
 
             {/* Top Badge Callout Pill */}
-            <div className="inline-flex items-center gap-2 mb-4">
+            <div className="inline-flex items-center gap-2 mb-3">
               <div className="border border-[#1A191D]/30 bg-white/95 rounded-full px-3.5 py-1 text-[11px] font-mono uppercase tracking-[0.08em] font-semibold text-[#1A191D] inline-flex items-center gap-2 shadow-2xs">
                 <span className="size-2 rounded-full bg-[#155A38] inline-block" />
                 <span>BUILT FOR STUDENTS, BY STUDENTS</span>
@@ -79,29 +79,29 @@ export async function HomeActionCards() {
             </div>
 
             {/* Main Editorial Heading on Two Lines */}
-            <h2 className="font-serif text-[32px] sm:text-[44px] md:text-[52px] font-normal leading-[1.1] tracking-tight text-[#1A191D] mb-3">
+            <h2 className="font-serif text-[28px] sm:text-[38px] md:text-[46px] font-normal leading-[1.12] tracking-tight text-[#1A191D] mb-2.5">
               <span className="block">Real experiences. Real questions.</span>
               <span className="block">Better preparation.</span>
             </h2>
 
             {/* Subtitle */}
-            <p className="font-sans text-[15.5px] sm:text-[17.5px] text-[#4A4950] leading-relaxed max-w-[52ch] mx-auto mb-6">
+            <p className="font-sans text-[15px] sm:text-[16.5px] text-[#4A4950] leading-relaxed max-w-[50ch] mx-auto mb-5">
               Learn from candidates who have actually been through the process.
             </p>
 
             {/* Category Filter Pills / Understated Navigation Actions */}
-            <div className="inline-flex items-center flex-wrap justify-center gap-2 sm:gap-2.5 bg-[#FAF7F3] px-3 py-1.5 rounded-full">
-              <span className="text-[13.5px] font-sans font-medium text-[#6B7280]">Explore</span>
+            <div className="inline-flex items-center flex-wrap justify-center gap-2 sm:gap-2.5 bg-[#FAF7F3] px-3 py-1 rounded-full">
+              <span className="text-[13px] font-sans font-medium text-[#6B7280]">Explore</span>
               <Link
                 href="/experiences"
-                className="bg-white border border-[#1A191D]/30 text-[#155A38] text-[11px] font-mono font-bold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-2xs hover:bg-[#F2F7F4] transition-all hover:scale-102 cursor-pointer"
+                className="bg-white border border-[#1A191D]/30 text-[#155A38] text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-2xs hover:bg-[#F2F7F4] transition-all hover:scale-102 cursor-pointer"
               >
                 INTERVIEW EXPERIENCES
               </Link>
-              <span className="text-[13px] font-sans text-[#6B7280]">or</span>
+              <span className="text-[12.5px] font-sans text-[#6B7280]">or</span>
               <Link
                 href="/questions"
-                className="bg-[#DBEFE4] hover:bg-[#cce6d9] text-[#1D2A44] border border-[#155A38]/30 text-[11px] font-mono font-bold uppercase tracking-wider px-3.5 py-1 rounded-full transition-all hover:scale-102 cursor-pointer"
+                className="bg-[#DBEFE4] hover:bg-[#cce6d9] text-[#1D2A44] border border-[#155A38]/30 text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full transition-all hover:scale-102 cursor-pointer"
               >
                 PLACEMENT QUESTIONS
               </Link>
@@ -110,147 +110,145 @@ export async function HomeActionCards() {
         </Reveal>
 
         {/* TWO SIDE-BY-SIDE PRODUCT CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-[1260px] mx-auto my-8 sm:my-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-7 items-stretch max-w-[1120px] mx-auto my-6 sm:my-8">
           {/* CARD 1: SHARED INTERVIEW EXPERIENCES (LEFT) */}
           <Reveal delay={1} className="h-full">
-            <div className="relative flex flex-col justify-between h-full bg-[#F1F6F4] rounded-[var(--card-radius,4px)] p-6 md:p-10 shadow-none border-0">
+            <div className="relative flex flex-col justify-between h-full bg-[#F1F6F4] rounded-[var(--card-radius,4px)] p-5 sm:p-6 md:p-7 shadow-none border-0">
               <div className="flex-1 flex flex-col">
-                {/* Hero Area: Cropped Product UI Mockup */}
+                {/* Hero Area: Compact Unclipped Product UI Mockup */}
                 <div
-                  className="relative w-full h-[225px] sm:h-[240px] mb-8 overflow-hidden rounded-[var(--mockup-radius,8px)] select-none pointer-events-none"
+                  className="relative w-full bg-white border border-[#E3E8E5] rounded-lg p-3.5 sm:p-4 shadow-2xs mb-5 sm:mb-6 select-none pointer-events-none"
                   aria-hidden="true"
                 >
-                  <div className="absolute top-1 left-1 right-0 sm:-right-4 bg-white border border-[#E3E8E5] rounded-[var(--mockup-radius,8px)] p-4 sm:p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)]">
-                    {/* Mockup Header + Overlapping Corner Avatars */}
-                    <div className="flex items-start justify-between mb-3.5">
-                      <div>
-                        <div className="text-[14px] sm:text-[15px] font-sans font-semibold text-[#14201B] tracking-tight">
-                          Share interview experience
-                        </div>
-                        <div className="text-[11px] font-mono text-[#55515D] mt-0.5">
-                          Step 1 of 3 &middot; Candidate Submission
-                        </div>
-                      </div>
-                      {/* Overlapping corner avatars (38px, overlapping right edge) */}
-                      <div className="flex -space-x-2.5 items-center pl-2 -mr-1">
-                        <div className="size-9 rounded-full ring-2 ring-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] overflow-hidden bg-[#D3E5DC] flex items-center justify-center shrink-0">
-                          <svg viewBox="0 0 36 36" fill="none" className="size-full">
-                            <rect width="36" height="36" fill="#D3E5DC" />
-                            <circle cx="18" cy="13" r="5.5" fill="#17563F" />
-                            <path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="#17563F" />
-                          </svg>
-                        </div>
-                        <div className="size-9 rounded-full ring-2 ring-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] overflow-hidden bg-[#D5E0EE] flex items-center justify-center shrink-0">
-                          <svg viewBox="0 0 36 36" fill="none" className="size-full">
-                            <rect width="36" height="36" fill="#D5E0EE" />
-                            <circle cx="18" cy="13" r="5.5" fill="#1B2540" />
-                            <path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="#1B2540" />
-                          </svg>
-                        </div>
-                        <div className="size-9 rounded-full ring-2 ring-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] overflow-hidden bg-[#DFDAEC] flex items-center justify-center shrink-0">
-                          <svg viewBox="0 0 36 36" fill="none" className="size-full">
-                            <rect width="36" height="36" fill="#DFDAEC" />
-                            <circle cx="18" cy="13" r="5.5" fill="#382F58" />
-                            <path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="#382F58" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Form Field 1: Company & Role */}
-                    <div className="mb-2.5">
-                      <div className="text-[11px] font-mono font-semibold uppercase tracking-[0.06em] text-[#17563F] mb-1">
-                        COMPANY &amp; ROLE
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="h-[28px] inline-flex items-center gap-1.5 px-2.5 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[12px] sm:text-[12.5px] font-medium text-[#14201B]">
-                          Google <span className="text-[#8A9590] text-[10px]">&times;</span>
-                        </span>
-                        <span className="h-[28px] inline-flex items-center gap-1.5 px-2.5 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[12px] sm:text-[12.5px] font-medium text-[#14201B]">
-                          Software Engineer <span className="text-[#8A9590] text-[10px]">&times;</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Form Field 2: Rounds Faced */}
-                    <div className="mb-2.5">
-                      <div className="text-[11px] font-mono font-semibold uppercase tracking-[0.06em] text-[#17563F] mb-1">
-                        ROUNDS FACED
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="h-[28px] inline-flex items-center gap-1 px-2.5 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[11.5px] sm:text-[12px] font-medium text-[#14201B]">
-                          Round 1 (OA) <span className="text-[#8A9590] text-[10px]">&times;</span>
-                        </span>
-                        <span className="h-[28px] inline-flex items-center gap-1 px-2.5 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[11.5px] sm:text-[12px] font-medium text-[#14201B]">
-                          Round 2 (DSA) <span className="text-[#8A9590] text-[10px]">&times;</span>
-                        </span>
-                        <span className="h-[28px] inline-flex items-center gap-1 px-2.5 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[11.5px] sm:text-[12px] font-medium text-[#14201B]">
-                          Round 3 (System) <span className="text-[#8A9590] text-[10px]">&times;</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Form Field 3: Difficulty & Focus */}
+                  {/* Mockup Header + Overlapping Corner Avatars */}
+                  <div className="flex items-start justify-between mb-2.5">
                     <div>
-                      <div className="text-[11px] font-mono font-semibold uppercase tracking-[0.06em] text-[#17563F] mb-1">
-                        DIFFICULTY &amp; TOPICS
+                      <div className="text-[13px] sm:text-[14px] font-sans font-semibold text-[#14201B] tracking-tight">
+                        Share interview experience
                       </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="h-[28px] inline-flex items-center gap-1 px-2.5 rounded-[4px] bg-[#EBF4F0] border border-[#C5DED3] text-[11.5px] sm:text-[12px] font-semibold text-[#17563F]">
-                          Medium-Hard
-                        </span>
-                        <span className="h-[28px] inline-flex items-center gap-1 px-2.5 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[11.5px] sm:text-[12px] font-medium text-[#14201B]">
-                          Binary Trees <span className="text-[#8A9590] text-[10px]">+</span>
-                        </span>
-                        <span className="h-[28px] inline-flex items-center gap-1 px-2.5 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[11.5px] sm:text-[12px] font-medium text-[#14201B]">
-                          Graphs <span className="text-[#8A9590] text-[10px]">+</span>
-                        </span>
+                      <div className="text-[10.5px] font-mono text-[#55515D] mt-0.5">
+                        Step 1 of 3 &middot; Candidate Submission
                       </div>
+                    </div>
+                    {/* Overlapping corner avatars */}
+                    <div className="flex -space-x-2 items-center pl-2">
+                      <div className="size-7 rounded-full ring-2 ring-white shadow-xs overflow-hidden bg-[#D3E5DC] flex items-center justify-center shrink-0">
+                        <svg viewBox="0 0 36 36" fill="none" className="size-full">
+                          <rect width="36" height="36" fill="#D3E5DC" />
+                          <circle cx="18" cy="13" r="5.5" fill="#17563F" />
+                          <path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="#17563F" />
+                        </svg>
+                      </div>
+                      <div className="size-7 rounded-full ring-2 ring-white shadow-xs overflow-hidden bg-[#D5E0EE] flex items-center justify-center shrink-0">
+                        <svg viewBox="0 0 36 36" fill="none" className="size-full">
+                          <rect width="36" height="36" fill="#D5E0EE" />
+                          <circle cx="18" cy="13" r="5.5" fill="#1B2540" />
+                          <path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="#1B2540" />
+                        </svg>
+                      </div>
+                      <div className="size-7 rounded-full ring-2 ring-white shadow-xs overflow-hidden bg-[#DFDAEC] flex items-center justify-center shrink-0">
+                        <svg viewBox="0 0 36 36" fill="none" className="size-full">
+                          <rect width="36" height="36" fill="#DFDAEC" />
+                          <circle cx="18" cy="13" r="5.5" fill="#382F58" />
+                          <path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="#382F58" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Form Field 1: Company & Role */}
+                  <div className="mb-2">
+                    <div className="text-[10px] font-mono font-semibold uppercase tracking-[0.06em] text-[#17563F] mb-1">
+                      COMPANY &amp; ROLE
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="h-[24px] inline-flex items-center gap-1.5 px-2 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[11px] sm:text-[11.5px] font-medium text-[#14201B]">
+                        Google <span className="text-[#8A9590] text-[9px]">&times;</span>
+                      </span>
+                      <span className="h-[24px] inline-flex items-center gap-1.5 px-2 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[11px] sm:text-[11.5px] font-medium text-[#14201B]">
+                        Software Engineer <span className="text-[#8A9590] text-[9px]">&times;</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Form Field 2: Rounds Faced */}
+                  <div className="mb-2">
+                    <div className="text-[10px] font-mono font-semibold uppercase tracking-[0.06em] text-[#17563F] mb-1">
+                      ROUNDS FACED
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="h-[24px] inline-flex items-center gap-1 px-2 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[10.5px] sm:text-[11px] font-medium text-[#14201B]">
+                        Round 1 (OA) <span className="text-[#8A9590] text-[9px]">&times;</span>
+                      </span>
+                      <span className="h-[24px] inline-flex items-center gap-1 px-2 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[10.5px] sm:text-[11px] font-medium text-[#14201B]">
+                        Round 2 (DSA) <span className="text-[#8A9590] text-[9px]">&times;</span>
+                      </span>
+                      <span className="h-[24px] inline-flex items-center gap-1 px-2 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[10.5px] sm:text-[11px] font-medium text-[#14201B]">
+                        Round 3 (System) <span className="text-[#8A9590] text-[9px]">&times;</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Form Field 3: Difficulty & Focus */}
+                  <div>
+                    <div className="text-[10px] font-mono font-semibold uppercase tracking-[0.06em] text-[#17563F] mb-1">
+                      DIFFICULTY &amp; TOPICS
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="h-[24px] inline-flex items-center gap-1 px-2 rounded-[4px] bg-[#EBF4F0] border border-[#C5DED3] text-[10.5px] sm:text-[11px] font-semibold text-[#17563F]">
+                        Medium-Hard
+                      </span>
+                      <span className="h-[24px] inline-flex items-center gap-1 px-2 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[10.5px] sm:text-[11px] font-medium text-[#14201B]">
+                        Binary Trees <span className="text-[#8A9590] text-[9px]">+</span>
+                      </span>
+                      <span className="h-[24px] inline-flex items-center gap-1 px-2 rounded-[4px] bg-[#F8FAFC] border border-[#D8DFDC] text-[10.5px] sm:text-[11px] font-medium text-[#14201B]">
+                        Graphs <span className="text-[#8A9590] text-[9px]">+</span>
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Eyebrow Lockup */}
-                <div className="flex items-center mb-4">
-                  <svg viewBox="0 0 16 16" fill="currentColor" className="size-4 text-[#17563F] shrink-0" aria-hidden="true">
+                <div className="flex items-center mb-3">
+                  <svg viewBox="0 0 16 16" fill="currentColor" className="size-3.5 text-[#17563F] shrink-0" aria-hidden="true">
                     <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5 6a5 5 0 0 1 10 0H3Z" />
                   </svg>
-                  <span className="font-sans font-semibold text-[16px] sm:text-[17px] text-[#14201B] tracking-tight ml-2.5">
+                  <span className="font-sans font-semibold text-[15px] sm:text-[16px] text-[#14201B] tracking-tight ml-2">
                     experiences
                   </span>
-                  <span className="w-px h-4 bg-[#14201B]/25 mx-3 inline-block shrink-0" aria-hidden="true" />
-                  <span className="font-mono text-[11px] font-semibold tracking-[0.08em] uppercase text-[#14201B] bg-[#D4E8DC] px-2 py-0.5 rounded-[3px]">
+                  <span className="w-px h-3.5 bg-[#14201B]/25 mx-2.5 inline-block shrink-0" aria-hidden="true" />
+                  <span className="font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#14201B] bg-[#D4E8DC] px-2 py-0.5 rounded-[3px]">
                     INTERVIEW EXPERIENCES
                   </span>
                 </div>
 
                 {/* Main Card Serif Heading */}
-                <h3 className="font-serif text-[28px] sm:text-[34px] md:text-[40px] lg:text-[46px] font-normal leading-[1.12] tracking-[-0.02em] text-[#14201B] mb-6">
+                <h3 className="font-serif text-[22px] sm:text-[26px] md:text-[30px] lg:text-[34px] font-normal leading-[1.15] tracking-[-0.02em] text-[#14201B] mb-3 sm:mb-4">
                   Share what your interview was really like
                 </h3>
 
                 {/* Bullet Points List */}
-                <ul className="space-y-3.5 my-6 font-sans text-[15px] sm:text-[15.5px] text-[#2B3A34] leading-[1.5]">
-                  <li className="flex items-start gap-3">
-                    <ThinCheck className="size-[18px] text-[#17563F] shrink-0 mt-0.5" />
+                <ul className="space-y-2.5 my-3 sm:my-4 font-sans text-[13.5px] sm:text-[14px] text-[#2B3A34] leading-[1.45]">
+                  <li className="flex items-start gap-2.5">
+                    <ThinCheck className="size-4 text-[#17563F] shrink-0 mt-0.5" />
                     <span>Share the rounds you faced</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <ThinCheck className="size-[18px] text-[#17563F] shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-2.5">
+                    <ThinCheck className="size-4 text-[#17563F] shrink-0 mt-0.5" />
                     <span>Document DSA, fundamentals and technical questions</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <ThinCheck className="size-[18px] text-[#17563F] shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-2.5">
+                    <ThinCheck className="size-4 text-[#17563F] shrink-0 mt-0.5" />
                     <span>Help future candidates prepare with first-hand information</span>
                   </li>
                 </ul>
               </div>
 
               {/* Primary CTA Button */}
-              <div className="mt-auto pt-9">
+              <div className="mt-auto pt-5 sm:pt-6">
                 <Link
                   href="/experiences/new"
-                  className="inline-flex items-center justify-center rounded-full bg-[#17563F] hover:bg-[#114230] text-white font-sans font-semibold text-[15px] px-6 py-3.5 transition-colors duration-150 cursor-pointer shadow-none"
+                  className="inline-flex items-center justify-center rounded-full bg-[#17563F] hover:bg-[#114230] text-white font-sans font-semibold text-[13.5px] sm:text-[14px] px-5 py-2.5 sm:py-3 transition-colors duration-150 cursor-pointer shadow-none"
                 >
                   Share your experience
                 </Link>
@@ -260,110 +258,108 @@ export async function HomeActionCards() {
 
           {/* CARD 2: ASK A PLACEMENT QUESTION (RIGHT) */}
           <Reveal delay={2} className="h-full">
-            <div className="relative flex flex-col justify-between h-full bg-[#EEF1F8] rounded-[var(--card-radius,4px)] p-6 md:p-10 shadow-none border-0">
+            <div className="relative flex flex-col justify-between h-full bg-[#EEF1F8] rounded-[var(--card-radius,4px)] p-5 sm:p-6 md:p-7 shadow-none border-0">
               <div className="flex-1 flex flex-col">
-                {/* Hero Area: Cropped Product UI Mockup */}
+                {/* Hero Area: Compact Unclipped Product UI Mockup */}
                 <div
-                  className="relative w-full h-[225px] sm:h-[240px] mb-8 overflow-hidden rounded-[var(--mockup-radius,8px)] select-none pointer-events-none"
+                  className="relative w-full bg-white border border-[#E3E8E5] rounded-lg p-3.5 sm:p-4 shadow-2xs mb-5 sm:mb-6 select-none pointer-events-none"
                   aria-hidden="true"
                 >
-                  <div className="absolute top-1 left-1 right-0 sm:-right-4 bg-white border border-[#E3E8E5] rounded-[var(--mockup-radius,8px)] p-4 sm:p-6 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)]">
-                    {/* Q&A Thread Header + Starburst Doodle */}
-                    <div className="flex items-start justify-between mb-3 pb-2 border-b border-[#E3E8E5] relative">
-                      <div className="flex items-center gap-1.5 text-[14px] sm:text-[15px] font-sans font-semibold text-[#14201B]">
-                        <span>Placement Q&amp;A Thread</span>
-                        <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-2 text-[#717684] ml-0.5" aria-hidden="true">
-                          <path d="M2 3.5 5 6.5 8 3.5" />
-                        </svg>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] uppercase font-semibold text-[#1B2540] bg-[#EEF1F8] border border-[#D5DEEE] px-2 py-0.5 rounded-[2px]">
-                          1 Answer Verified
-                        </span>
-                      </div>
-                      {/* Top-right Starburst doodle accent */}
-                      <MockupDoodleBurst className="absolute -top-3.5 -right-3 size-14 sm:size-18 pointer-events-none opacity-90" />
+                  {/* Q&A Thread Header + Starburst Doodle */}
+                  <div className="flex items-start justify-between mb-2.5 pb-2 border-b border-[#E3E8E5] relative">
+                    <div className="flex items-center gap-1.5 text-[13px] sm:text-[14px] font-sans font-semibold text-[#14201B]">
+                      <span>Placement Q&amp;A Thread</span>
+                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-2 text-[#717684] ml-0.5" aria-hidden="true">
+                        <path d="M2 3.5 5 6.5 8 3.5" />
+                      </svg>
                     </div>
-
-                    {/* Student Question */}
-                    <div className="mb-2.5">
-                      <div className="text-[11px] font-mono font-semibold uppercase tracking-[0.06em] text-[#1B2540] mb-0.5">
-                        STUDENT QUESTION &middot; CS &apos;26
-                      </div>
-                      <div className="text-[12px] sm:text-[12.5px] font-medium text-[#14201B] leading-snug">
-                        &ldquo;What DSA patterns were asked in Google Round 2? Is graph DP common?&rdquo;
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[9.5px] uppercase font-semibold text-[#1B2540] bg-[#EEF1F8] border border-[#D5DEEE] px-1.5 py-0.5 rounded-[2px]">
+                        1 Answer Verified
+                      </span>
                     </div>
+                    {/* Top-right Starburst doodle accent */}
+                    <MockupDoodleBurst className="absolute -top-3.5 -right-2 size-12 sm:size-14 pointer-events-none opacity-90" />
+                  </div>
 
-                    {/* Alumni Answer Panel */}
-                    <div className="bg-[#FAFBFD] border border-[#E3E8E5] rounded-[4px] p-2.5 sm:p-3">
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <div className="size-5 rounded-full bg-[#1B2540] text-white text-[9px] font-bold flex items-center justify-center shrink-0">
-                            AS
-                          </div>
-                          <span className="text-[11.5px] sm:text-[12px] font-semibold text-[#14201B] truncate">
-                            Aarav Sharma
-                          </span>
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-[2px] bg-[#EEF1F8] border border-[#D5DEEE] text-[9.5px] font-semibold text-[#1B2540] shrink-0">
-                            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="size-2 text-[#1B2540]">
-                              <path d="M2 6.5l2.5 2.5 5.5-6" />
-                            </svg>
-                            Verified Alum
-                          </span>
+                  {/* Student Question */}
+                  <div className="mb-2">
+                    <div className="text-[10px] font-mono font-semibold uppercase tracking-[0.06em] text-[#1B2540] mb-0.5">
+                      STUDENT QUESTION &middot; CS &apos;26
+                    </div>
+                    <div className="text-[11.5px] sm:text-[12px] font-medium text-[#14201B] leading-snug">
+                      &ldquo;What DSA patterns were asked in Google Round 2? Is graph DP common?&rdquo;
+                    </div>
+                  </div>
+
+                  {/* Alumni Answer Panel */}
+                  <div className="bg-[#FAFBFD] border border-[#E3E8E5] rounded-[4px] p-2.5">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <div className="size-4.5 sm:size-5 rounded-full bg-[#1B2540] text-white text-[8.5px] sm:text-[9px] font-bold flex items-center justify-center shrink-0">
+                          AS
                         </div>
-                        <span className="text-[10px] sm:text-[10.5px] font-mono text-[#55515D] shrink-0">
-                          SDE-2 @ Google
+                        <span className="text-[11px] sm:text-[11.5px] font-semibold text-[#14201B] truncate">
+                          Aarav Sharma
+                        </span>
+                        <span className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded-[2px] bg-[#EEF1F8] border border-[#D5DEEE] text-[9px] font-semibold text-[#1B2540] shrink-0">
+                          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="size-2 text-[#1B2540]">
+                            <path d="M2 6.5l2.5 2.5 5.5-6" />
+                          </svg>
+                          Verified Alum
                         </span>
                       </div>
-                      <p className="text-[11px] sm:text-[11.5px] text-[#2B3A34] leading-relaxed line-clamp-2">
-                        Focus heavily on binary search on answer and BFS/DFS with cycle detection. No graph DP was asked, but interviewers grilled edge cases.
-                      </p>
+                      <span className="text-[9.5px] sm:text-[10px] font-mono text-[#55515D] shrink-0">
+                        SDE-2 @ Google
+                      </span>
                     </div>
+                    <p className="text-[10.5px] sm:text-[11px] text-[#2B3A34] leading-relaxed line-clamp-2">
+                      Focus heavily on binary search on answer and BFS/DFS with cycle detection. No graph DP was asked, but interviewers grilled edge cases.
+                    </p>
                   </div>
                 </div>
 
                 {/* Eyebrow Lockup */}
-                <div className="flex items-center mb-4">
-                  <svg viewBox="0 0 16 16" fill="currentColor" className="size-4 text-[#1B2540] shrink-0" aria-hidden="true">
+                <div className="flex items-center mb-3">
+                  <svg viewBox="0 0 16 16" fill="currentColor" className="size-3.5 text-[#1B2540] shrink-0" aria-hidden="true">
                     <path d="M8 1a7 7 0 0 0-7 7c0 2.22 1.03 4.2 2.64 5.48V15a.5.5 0 0 0 .8.4l1.9-1.27A6.97 6.97 0 0 0 8 15a7 7 0 0 0 0-14Z" />
                   </svg>
-                  <span className="font-sans font-semibold text-[16px] sm:text-[17px] text-[#14201B] tracking-tight ml-2.5">
+                  <span className="font-sans font-semibold text-[15px] sm:text-[16px] text-[#14201B] tracking-tight ml-2">
                     questions
                   </span>
-                  <span className="w-px h-4 bg-[#14201B]/25 mx-3 inline-block shrink-0" aria-hidden="true" />
-                  <span className="font-mono text-[11px] font-semibold tracking-[0.08em] uppercase text-[#14201B] bg-[#D8E2F2] px-2 py-0.5 rounded-[3px]">
+                  <span className="w-px h-3.5 bg-[#14201B]/25 mx-2.5 inline-block shrink-0" aria-hidden="true" />
+                  <span className="font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#14201B] bg-[#D8E2F2] px-2 py-0.5 rounded-[3px]">
                     PLACEMENT QUESTIONS
                   </span>
                 </div>
 
                 {/* Main Card Serif Heading */}
-                <h3 className="font-serif text-[28px] sm:text-[34px] md:text-[40px] lg:text-[46px] font-normal leading-[1.12] tracking-[-0.02em] text-[#14201B] mb-6">
+                <h3 className="font-serif text-[22px] sm:text-[26px] md:text-[30px] lg:text-[34px] font-normal leading-[1.15] tracking-[-0.02em] text-[#14201B] mb-3 sm:mb-4">
                   Ask someone who&apos;s been through it
                 </h3>
 
                 {/* Bullet Points List */}
-                <ul className="space-y-3.5 my-6 font-sans text-[15px] sm:text-[15.5px] text-[#2B3A34] leading-[1.5]">
-                  <li className="flex items-start gap-3">
-                    <ThinCheck className="size-[18px] text-[#17563F] shrink-0 mt-0.5" />
+                <ul className="space-y-2.5 my-3 sm:my-4 font-sans text-[13.5px] sm:text-[14px] text-[#2B3A34] leading-[1.45]">
+                  <li className="flex items-start gap-2.5">
+                    <ThinCheck className="size-4 text-[#17563F] shrink-0 mt-0.5" />
                     <span>Ask about rounds, DSA and fundamentals</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <ThinCheck className="size-[18px] text-[#17563F] shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-2.5">
+                    <ThinCheck className="size-4 text-[#17563F] shrink-0 mt-0.5" />
                     <span>Get first-hand answers from relevant alumni</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <ThinCheck className="size-[18px] text-[#17563F] shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-2.5">
+                    <ThinCheck className="size-4 text-[#17563F] shrink-0 mt-0.5" />
                     <span>Find existing answers before asking</span>
                   </li>
                 </ul>
               </div>
 
               {/* Primary CTA Button */}
-              <div className="mt-auto pt-9">
+              <div className="mt-auto pt-5 sm:pt-6">
                 <Link
                   href="/questions"
-                  className="inline-flex items-center justify-center rounded-full bg-[#1B2540] hover:bg-[#121A2D] text-white font-sans font-semibold text-[15px] px-6 py-3.5 transition-colors duration-150 cursor-pointer shadow-none"
+                  className="inline-flex items-center justify-center rounded-full bg-[#1B2540] hover:bg-[#121A2D] text-white font-sans font-semibold text-[13.5px] sm:text-[14px] px-5 py-2.5 sm:py-3 transition-colors duration-150 cursor-pointer shadow-none"
                 >
                   Ask a question
                 </Link>
@@ -374,7 +370,7 @@ export async function HomeActionCards() {
 
         {/* BOTTOM DOUBLE-BORDERED HAND-DRAWN / RETRO PROOF STRIP */}
         <Reveal delay={3}>
-          <div className="relative mx-auto max-w-[1240px] my-10 sm:my-14">
+          <div className="relative mx-auto max-w-[1120px] my-6 sm:my-8">
             {/* Outer border box with thin border and inner double line matching reference screenshot */}
             <div className="relative border-[1.5px] border-[#1A191D] p-[3px] bg-[#FAF7F3] shadow-[2px_2px_0px_rgba(26,25,29,0.06)]">
               <div className="border border-[#1A191D] bg-white py-4 sm:py-5 px-4 sm:px-8 flex items-center justify-between gap-4">

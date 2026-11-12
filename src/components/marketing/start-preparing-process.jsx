@@ -109,20 +109,20 @@ export function StartPreparingProcess() {
   ];
 
   return (
-    <section className="relative border-b border-[#ECEAE5] bg-white py-16 sm:py-20 md:py-28 overflow-hidden transition-colors duration-500">
+    <section className="relative border-b border-[#ECEAE5] bg-white py-12 sm:py-16 md:py-20 overflow-hidden transition-colors duration-500">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
 
           {/* LEFT COLUMN: Heading, Link, and Hand-Drawn Doodle */}
           <div className="lg:col-span-5 flex flex-col items-start pr-0 lg:pr-4">
             <Reveal>
-              <h2 className="font-serif text-[38px] sm:text-[46px] md:text-[54px] font-normal leading-[1.08] tracking-tight text-[#1A191D] mb-3">
+              <h2 className="font-serif text-[34px] sm:text-[42px] md:text-[48px] font-normal leading-[1.1] tracking-tight text-[#1A191D] mb-2.5">
                 Start preparing
               </h2>
 
               <Link
                 href="#how-it-works"
-                className="font-mono text-[11.5px] uppercase tracking-[0.14em] font-bold text-[#1A191D] hover:text-[#155A38] inline-flex items-center gap-1 transition-colors mb-10 sm:mb-14 cursor-pointer"
+                className="font-mono text-[11px] uppercase tracking-[0.14em] font-bold text-[#1A191D] hover:text-[#155A38] inline-flex items-center gap-1 transition-colors mb-6 sm:mb-8 cursor-pointer"
               >
                 SEE HOW IT WORKS &rarr;
               </Link>

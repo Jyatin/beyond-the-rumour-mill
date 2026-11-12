@@ -31,10 +31,10 @@ export function HowItWorksCompact() {
   ];
 
   return (
-    <section className="relative border-b border-[var(--hairline-soft)] bg-[var(--background)] py-16 md:py-24 overflow-hidden transition-colors duration-500">
-      <div className="mx-auto max-w-[1360px] px-5 md:px-8">
+    <section className="relative border-b border-[var(--hairline-soft)] bg-[var(--background)] py-12 sm:py-14 md:py-18 overflow-hidden transition-colors duration-500">
+      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
         <Reveal>
-          <div className="text-center max-w-[620px] mx-auto mb-12">
+          <div className="text-center max-w-[620px] mx-auto mb-9 sm:mb-10">
             <div className="inline-flex items-center gap-2 mb-3">
               <DoodleSparkle className="size-5 text-[var(--brand)]" />
               <p className="type-data text-[12px] uppercase tracking-[0.16em] text-[var(--brand)] font-semibold font-mono">
