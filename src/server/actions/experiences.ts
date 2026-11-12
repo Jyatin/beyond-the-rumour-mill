@@ -6,7 +6,7 @@ import { db } from "../db";
 import { experiences, companies } from "../db/schema";
 import { requireUser } from "../auth-helpers";
 import { revalidatePath } from "next/cache";
-import type { roundSchema } from "./rounds";
+import type { RoundInput } from "./rounds";
 
 const experienceSchema = z.object({
   companyId: z.string().min(1, "Company is required"),
@@ -155,7 +155,7 @@ export async function saveFullExperienceAction({
 }: {
   id?: string;
   data: z.infer<typeof experienceSchema>;
-  rounds?: z.infer<typeof roundSchema>[];
+  rounds?: RoundInput[];
   targetStatus?: "draft" | "published";
 }) {
   const user = await requireUser();

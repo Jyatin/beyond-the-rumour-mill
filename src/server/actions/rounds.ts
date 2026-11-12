@@ -21,7 +21,7 @@ const questionSchema = z.object({
   difficulty: z.string().min(1),
 });
 
-export const roundSchema = z.object({
+const roundSchema = z.object({
   roundTypeName: z.string().min(1),
   title: z.string().optional(),
   summary: z.string().optional(),
@@ -29,6 +29,8 @@ export const roundSchema = z.object({
   topics: z.array(z.string()).default([]),
   questions: z.array(questionSchema).default([]),
 });
+
+export type RoundInput = z.infer<typeof roundSchema>;
 
 const updateRoundsSchema = z.object({
   experienceId: z.string().min(1),
