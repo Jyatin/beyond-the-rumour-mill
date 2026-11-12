@@ -246,19 +246,24 @@ export async function createOrAttachQuestionAskAction(data: z.infer<typeof creat
       })
       .where(eq(questions.id, questionRecord.id));
 
-    await createAuditRecord({
-      action: isNewSlot ? "question_slot_created" : "question_ask_attached",
-      entityType: "question",
-      entityId: questionRecord.id,
-      metadata: { askId: newAsk.id, userId: user.id, slotKey },
-    });
-
     return {
       question: questionRecord,
       ask: newAsk,
       isNewSlot,
     };
   });
+
+  try {
+    await createAuditRecord({
+      action: result.isNewSlot ? "question_slot_created" : "question_ask_attached",
+      entityType: "question",
+      entityId: result.question.id,
+      actorId: user.id,
+      metadata: { askId: result.ask.id, userId: user.id, slotKey },
+    });
+  } catch (err) {
+    console.error("Audit log error on question ask:", err);
+  }
 
   revalidatePath("/questions");
   revalidatePath(`/companies/${parsed.companyId}`);
@@ -409,13 +414,19 @@ export async function submitAnswerAction(data: z.infer<typeof submitAnswerSchema
       }
     }
 
+  });
+
+  try {
     await createAuditRecord({
       action: "answer_submitted",
       entityType: "answer",
       entityId: answerId,
+      actorId: user.id,
       metadata: { questionId: question.id, basis: parsed.basis, isEligibleForConsensus },
     });
-  });
+  } catch (err) {
+    console.error("Audit log error on answer submit:", err);
+  }
 
   revalidatePath(`/questions/${parsed.questionId}`);
   revalidatePath(`/companies/${question.companyId}`);
