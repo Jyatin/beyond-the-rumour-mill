@@ -31,6 +31,32 @@ describe("Better Auth & OAuth Integration Tests", () => {
     expect(auth.api.signInSocial).toBeDefined();
   });
 
+  it("generates deterministic Google OAuth callback URL matching /api/auth/callback/google", async () => {
+    const authRoute = await import("../src/app/api/auth/[...all]/route");
+    const req = new Request("http://localhost:3000/api/auth/sign-in/social", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        origin: "http://localhost:3000",
+      },
+      body: JSON.stringify({
+        provider: "google",
+        callbackURL: "/",
+      }),
+    });
+
+    const res = await authRoute.POST(req);
+    expect(res.ok).toBe(true);
+    const data = await res.json();
+    expect(data.url).toBeDefined();
+    const parsed = new URL(data.url);
+    expect(parsed.origin).toBe("https://accounts.google.com");
+    expect(parsed.pathname).toBe("/o/oauth2/v2/auth");
+    const redirectUri = parsed.searchParams.get("redirect_uri");
+    expect(redirectUri).toBeDefined();
+    expect(redirectUri).toMatch(/\/api\/auth\/callback\/google$/);
+  });
+
   it("verifies account table schema fields for OAuth token persistence", async () => {
     const { account, session } = await import("../src/server/db/schema");
     expect(account).toBeDefined();

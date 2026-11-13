@@ -74,8 +74,10 @@ function getTrustedOrigins(): string[] {
   }
 
   // 6. Explicitly allow the project's verified Preview deployment origins
-  origins.add("https://beyond-the-rumour-mill-main-9q8kjykhr-jyatin1.vercel.app");
+  origins.add("https://beyond-the-rumour-mill-preview-jyatin1.vercel.app");
   origins.add("https://beyond-the-rumour-mill-main-jyatin1.vercel.app");
+  origins.add("https://beyond-the-rumour-mill-main.vercel.app");
+  origins.add("https://beyond-the-rumour-mill-main-9q8kjykhr-jyatin1.vercel.app");
 
   // Project-scoped pattern (scoped specifically to jyatin1 / beyond-the-rumour-mill-main, NOT an unrestricted *.vercel.app wildcard)
   origins.add("https://beyond-the-rumour-mill-main-*-jyatin1.vercel.app");
