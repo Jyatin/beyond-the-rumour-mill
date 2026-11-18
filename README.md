@@ -1,172 +1,179 @@
+<!-- Project header -->
+<div align="center">
+
 # Beyond the Rumour Mill
 
-<p align="center">
-  <strong>Turn placement uncertainty into career clarity.</strong>
-  <br />
-  A community-driven platform for structured interview experiences, placement intelligence, and meaningful alumni connections.
+### Less hearsay. More signal. Better preparation.
+
+A placement intelligence platform that brings interview experiences, career insights, and alumni guidance into one structured community.
+
+<p>
+  <a href="https://github.com/Jyatin/beyond-the-rumour-mill/actions/workflows/ci.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Jyatin/beyond-the-rumour-mill/ci.yml?branch=main&style=for-the-badge&label=CI" alt="CI status" />
+  </a>
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js" alt="Next.js 16" />
+  <img src="https://img.shields.io/badge/React-19-149ECA?style=for-the-badge&logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript 5" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql" alt="PostgreSQL 16" />
 </p>
 
-<p align="center">
-  <a href="https://github.com/Jyatin/beyond-the-rumour-mill"><img src="https://img.shields.io/badge/Project-Beyond%20the%20Rumour%20Mill-6D5AE6?style=flat-square" alt="Project" /></a>
-  <img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js" />
-  <img src="https://img.shields.io/badge/React-19-149ECA?style=flat-square&logo=react" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql" alt="PostgreSQL" />
+<p>
+  <a href="#-overview">Overview</a> ·
+  <a href="#-product-highlights">Features</a> ·
+  <a href="#-architecture">Architecture</a> ·
+  <a href="#-tech-stack">Tech Stack</a> ·
+  <a href="#-getting-started">Get Started</a> ·
+  <a href="#-contributing">Contribute</a>
 </p>
 
-<p align="center">
-  <a href="#overview">Overview</a> ·
-  <a href="#why-beyond-the-rumour-mill">Why it matters</a> ·
-  <a href="#what-the-platform-is-building">Features</a> ·
-  <a href="#technology">Technology</a> ·
-  <a href="#getting-started">Getting started</a> ·
-  <a href="#contributing">Contributing</a>
-</p>
+</div>
 
 ---
 
-## Overview
+## 📸 A First Look
 
-**Beyond the Rumour Mill** is a placement intelligence and alumni-connect platform designed to make career preparation more transparent and evidence-led.
+<p align="center">
+  <img src="public/normal_screen_hero.png" alt="Beyond the Rumour Mill homepage showing the editorial landing experience." width="49%" />
+  <img src="public/verify_banner.png" alt="Beyond the Rumour Mill visual introducing its interview verification experience." width="49%" />
+</p>
 
-Students often prepare for hiring processes using scattered messages, outdated interview questions, and second-hand accounts. The platform brings this information into one structured space—organising interview experiences by company, role, hiring cycle, and round while creating a path for students to learn directly from people who have already been through the process.
+<p align="center">
+  <sub>Product visuals from the current development branch.</sub>
+</p>
 
-The goal is simple: **replace campus hearsay with useful, contextual, and verifiable career knowledge.**
+## 🎯 Overview
 
-## Why Beyond the Rumour Mill?
+**Beyond the Rumour Mill** is a community-driven placement intelligence platform built to make campus hiring information easier to discover, evaluate, and act on.
 
-Placement information is valuable, but it is rarely easy to find or assess.
+Students often prepare for interviews using scattered WhatsApp messages, outdated question lists, and second-hand accounts. The platform brings these experiences into a structured knowledge base—organised by company, role, hiring cycle, interview round, and topic—while creating a path for students to connect with alumni who have already navigated those hiring processes.
 
-- **Fragmented knowledge:** Interview experiences are spread across chats, documents, and personal conversations.
-- **Unclear reliability:** Students often cannot tell whether an account is first-hand, recent, or independently corroborated.
-- **Repeated questions:** Alumni receive the same preparation questions individually, with little shared context.
-- **Limited access to guidance:** Students may struggle to find relevant seniors based on company, role, or experience.
+> **The idea:** turn scattered placement stories into structured, contextual, and verifiable career knowledge.
 
-Beyond the Rumour Mill is being built to bring these signals together in a structured, searchable, and community-oriented product.
+## 💡 The Problem We're Solving
 
-## What the Platform Is Building
+| The usual experience | What the platform aims to enable |
+| --- | --- |
+| Interview information scattered across chats and documents | Searchable company- and role-specific experiences |
+| Unclear source, recency, and reliability | Contextual submissions with verification signals |
+| The same preparation questions asked repeatedly | Reusable interview knowledge and preparation insights |
+| Difficult to find the right senior for guidance | Alumni discovery and mentorship workflows |
 
-### Interview experience intelligence
+## ✨ Product Highlights
 
-- Company- and role-specific interview experiences.
-- Round-by-round summaries, topics, difficulty, and reported questions.
-- Hiring-cycle context to help readers judge relevance.
-- Structured records that can be reviewed and compared.
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🧠 Interview Intelligence</h3>
+      Organise first-hand interview experiences by company, role, hiring cycle, round, difficulty, and topic.
+    </td>
+    <td width="50%" valign="top">
+      <h3>🔎 Evidence & Verification</h3>
+      Build trust through structured submissions, verification states, moderation, and clear source context.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🤝 Alumni Connect</h3>
+      Help students discover relevant alumni and create pathways for mentorship, mock interviews, and career conversations.
+    </td>
+    <td width="50%" valign="top">
+      <h3>📚 Placement Preparation</h3>
+      Bring company information, role context, hiring rounds, and preparation resources into one experience.
+    </td>
+  </tr>
+</table>
 
-### Evidence and verification
+<details>
+  <summary><strong>How the experience is designed to work</strong></summary>
+  <br />
 
-- Support for evidence-backed experience and employment verification.
-- Clear verification states to distinguish verified information from community contributions.
-- Moderation and reporting foundations for handling questionable or outdated content.
-- A data model for consolidating repeated topics and interview questions.
+  1. **Contribute:** Students and alumni submit structured interview experiences and relevant context.
+  2. **Review:** Submissions can be reviewed, moderated, and associated with verification signals.
+  3. **Discover:** Students explore information by company, role, hiring cycle, and interview round.
+  4. **Connect:** Candidates find relevant alumni and seek guidance based on real experience.
+</details>
 
-### Alumni and mentorship
+> [!NOTE]
+> The repository is actively evolving. Some areas have working application flows and full-stack foundations; other product workflows are still being integrated. The highlights describe the product direction and current foundations, not a claim that every feature is production-ready.
 
-- Alumni profiles with professional and academic context.
-- Discovery foundations for finding relevant mentors.
-- Mentorship requests and mock-interview scheduling workflows.
-- Student questions and alumni answers with context about the source of the response.
+## 🏗️ Architecture
 
-### Placement preparation
+The application is built with the Next.js App Router and separates presentation, server-side services, authentication, and persistence.
 
-- Company and role information.
-- Placement-drive and eligibility data.
-- Preparation topics and resources.
-- Personal preparation items and progress tracking foundations.
-
-> **Development note:** The repository is under active development. Some areas have working application flows, while others are represented by backend, database, or product foundations still being integrated. The feature list describes the product direction and implemented foundations—not a claim that every workflow is production-ready.
-
-## How It Fits Together
-
-```text
-  STUDENT / ALUMNI CONTRIBUTIONS
-              |
-              v
-  Structured experiences, questions,
-  answers and supporting evidence
-              |
-              v
-  REVIEW, NORMALISATION & MODERATION
-              |
-              v
-  SEARCHABLE PLACEMENT INTELLIGENCE
-              |
-       +------+------+
-       |             |
-       v             v
-  Better-prepared   Alumni guidance,
-  candidates        mentorship & mock interviews
+```mermaid
+flowchart TB
+    U["Students & Alumni"] --> WEB["Next.js 16 · React 19"]
+    WEB --> APP["App Router & UI Components"]
+    APP --> AUTH["Better Auth"]
+    APP --> SERVER["Server-side Services"]
+    SERVER --> ORM["Drizzle ORM"]
+    ORM --> DB[("PostgreSQL 16")]
+    SERVER --> EMAIL["Resend · Email"]
+    SERVER --> AI["AI Provider Adapter"]
+    SERVER --> BLOB["Vercel Blob · Object Storage"]
+    CI["GitHub Actions"] -.-> WEB
+    CI -.-> DB
 ```
 
-The platform is designed around structured contributions rather than isolated anecdotes. Company, role, hiring cycle, interview round, topic, and verification context help make information easier to interpret and reuse.
+### Engineering foundations
 
-## Technology
+- **Application:** Next.js App Router with React Server and Client Components.
+- **Authentication:** Better Auth with database-backed user records and optional social provider configuration.
+- **Persistence:** PostgreSQL with Drizzle ORM and versioned schema migrations.
+- **External services:** Resend for email, configurable AI provider integration, and Vercel Blob for object storage.
+- **Quality:** Vitest, ESLint, TypeScript checks, and a GitHub Actions CI workflow.
 
-| Layer | Technologies |
+## 🧰 Tech Stack
+
+| Area | Tools |
 | --- | --- |
-| Application | Next.js 16, React 19, TypeScript |
-| Styling & UI | Tailwind CSS 4, Radix UI, Lucide |
-| Interaction | Motion, CMDK |
-| Authentication | Better Auth |
-| Database | PostgreSQL 16 |
-| Data access & migrations | Drizzle ORM, Drizzle Kit |
-| Email | Resend integration |
-| File storage | Vercel Blob integration |
-| Testing | Vitest |
-| Code quality | ESLint, TypeScript |
-| CI | GitHub Actions |
-| Local infrastructure | Docker Compose |
+| Framework | [Next.js 16](https://nextjs.org/) · [React 19](https://react.dev/) |
+| Language | [TypeScript](https://www.typescriptlang.org/) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com/) |
+| UI & Interaction | [Radix UI](https://www.radix-ui.com/) · [Motion](https://motion.dev/) · [Lucide](https://lucide.dev/) · [CMDK](https://cmdk.paco.me/) |
+| Authentication | [Better Auth](https://www.better-auth.com/) |
+| Database | [PostgreSQL 16](https://www.postgresql.org/) |
+| ORM & Migrations | [Drizzle ORM](https://orm.drizzle.team/) |
+| Email & Storage | [Resend](https://resend.com/) · [Vercel Blob](https://vercel.com/docs/vercel-blob) |
+| Testing & CI | [Vitest](https://vitest.dev/) · ESLint · GitHub Actions |
+| Local Infrastructure | Docker Compose |
 
-## Architecture at a Glance
-
-The application uses the **Next.js App Router** with a clear separation between the user interface and server-side capabilities.
-
-- **App layer:** Routes, layouts, and page composition.
-- **Component layer:** Reusable interface components grouped by product area.
-- **Server layer:** Authentication, database access, and server-side services.
-- **Data layer:** PostgreSQL schema managed with Drizzle ORM.
-- **Quality layer:** Automated linting, type-checking, integration tests, and production builds in CI.
-
-The database model covers users and profiles, companies, placement drives, interview experiences, questions and answers, evidence, moderation, mentorship, notifications, and structured interview-intelligence data.
-
-## Repository Structure
+## 📂 Repository Structure
 
 ```text
 beyond-the-rumour-mill/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml              # Continuous integration workflow
-├── drizzle/                    # Generated database migrations
-├── public/                     # Static assets
+│       └── ci.yml                 # CI: database, lint, types, tests & build
+├── drizzle/                       # Database migration files
+├── public/                        # Static assets and product visuals
 ├── scripts/
-│   └── seed.ts                 # Development database seeding
+│   └── seed.ts                    # Development database seeding
 ├── src/
-│   ├── app/                    # Next.js routes and layouts
-│   ├── components/             # Reusable UI and product components
-│   ├── hooks/                  # Shared React hooks
-│   ├── lib/                    # Shared utilities and application data
+│   ├── app/                       # App Router pages, layouts and routes
+│   ├── components/                # Reusable product and UI components
+│   ├── hooks/                     # Shared React hooks
+│   ├── lib/                       # Shared utilities and application helpers
 │   └── server/
-│       ├── auth.ts             # Better Auth configuration
+│       ├── auth.ts                # Better Auth configuration
 │       └── db/
-│           ├── index.ts        # Drizzle database client
-│           └── schema.ts       # PostgreSQL schema
-├── .env.example                # Environment variable template
-├── docker-compose.yml          # Local PostgreSQL service
-├── drizzle.config.ts           # Drizzle Kit configuration
+│           ├── index.ts           # PostgreSQL / Drizzle client
+│           └── schema.ts          # Database schema
+├── tests/                         # Automated tests
+├── .env.example                   # Environment configuration template
+├── docker-compose.yml             # Local PostgreSQL service
+├── drizzle.config.ts              # Drizzle Kit configuration
 ├── package.json
 └── README.md
 ```
 
-*The tree highlights the main application boundaries; individual feature files and modules may evolve as development continues.*
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 20 or later
+- [Node.js 20+](https://nodejs.org/)
 - npm
-- Docker Desktop (for the local PostgreSQL database)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) for local PostgreSQL
 
 ### 1. Clone the repository
 
@@ -178,123 +185,138 @@ cd beyond-the-rumour-mill
 ### 2. Install dependencies
 
 ```bash
-npm install
+npm ci
 ```
 
 ### 3. Configure environment variables
-
-Create a local environment file from the example:
 
 ```bash
 cp .env.example .env
 ```
 
-Update the values in `.env` for your local setup. Never commit real credentials or API keys.
+Update the values in `.env` for your local environment. The supplied Docker Compose configuration uses PostgreSQL on port `54320`.
 
-### 4. Start PostgreSQL
+### 4. Start the database
 
 ```bash
 docker compose up -d
 ```
 
-The Compose configuration exposes PostgreSQL on port `54320`.
-
-### 5. Prepare the database
-
-For a fresh local database, push the Drizzle schema and seed the development data:
+### 5. Apply migrations and seed local data
 
 ```bash
-npm run db:push
+npm run db:migrate
 npm run db:seed
 ```
 
-### 6. Run the application
+### 6. Start the development server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Visit **http://localhost:3000** to open the application.
 
-## Environment Variables
+## ⚙️ Configuration
 
-The repository includes an `.env.example` file. The main configuration groups are:
+The `.env.example` file documents the supported configuration.
 
 | Variable | Purpose |
 | --- | --- |
 | `DATABASE_URL` | PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Secret used by Better Auth |
-| `BETTER_AUTH_URL` | Base URL for the application authentication server |
-| `RESEND_API_KEY`, `EMAIL_FROM` | Outbound email configuration |
-| `AI_PROVIDER`, `AI_MODEL`, `AI_API_KEY` | AI-assisted extraction configuration |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional Google sign-in |
-| `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET` | Optional LinkedIn sign-in |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob storage access |
+| `BETTER_AUTH_SECRET` | Better Auth secret |
+| `BETTER_AUTH_URL` | Application authentication base URL |
+| `RESEND_API_KEY` / `EMAIL_FROM` | Email delivery configuration |
+| `AI_PROVIDER` / `AI_MODEL` / `AI_API_KEY` | AI provider and model configuration |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Optional Google OAuth |
+| `LINKEDIN_CLIENT_ID` / `LINKEDIN_CLIENT_SECRET` | Optional LinkedIn OAuth |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob access token |
 | `STORAGE_DIR` | Optional local storage directory |
 
-Only configure integrations you intend to use. Keep secrets in your local environment or deployment provider—not in source control.
+Keep credentials in your local `.env` file or deployment environment. Never commit real secrets.
 
-## Available Scripts
+## 🧪 Quality Checks
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the local development server |
-| `npm run build` | Create a production build |
-| `npm run start` | Run the production server |
-| `npm run lint` | Run ESLint |
-| `npm run test` | Run the Vitest test suite |
-| `npm run db:generate` | Generate Drizzle migrations |
-| `npm run db:migrate` | Apply database migrations |
-| `npm run db:push` | Push the schema to the database |
-| `npm run db:seed` | Seed development data |
-| `npm run db:studio` | Open Drizzle Studio |
-
-Before submitting a change, run the relevant checks:
+Run the following commands before opening a pull request:
 
 ```bash
+# Lint
 npm run lint
+
+# TypeScript
 npx tsc --noEmit
+
+# Automated tests
 npm run test
+
+# Production build
 npm run build
 ```
 
-## Continuous Integration
+### Continuous Integration
 
-The GitHub Actions workflow runs against a PostgreSQL service and checks the project through:
+The GitHub Actions workflow provisions PostgreSQL 16 and runs:
 
 1. Dependency installation
-2. Database migration and seeding
+2. Database migrations and seed
 3. ESLint
 4. TypeScript compilation
-5. Integration tests
+5. Vitest test suite
 6. Next.js production build
 
-This helps catch regressions before changes are merged.
+[View the CI workflow](.github/workflows/ci.yml).
 
-## Project Status
+## 📜 Available Scripts
 
-**Active development — full-stack foundation in progress.**
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Build the production application |
+| `npm run start` | Start the production server |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run Vitest |
+| `npm run db:generate` | Generate database migrations |
+| `npm run db:migrate` | Apply database migrations |
+| `npm run db:push` | Push schema changes to the database |
+| `npm run db:seed` | Seed development data |
+| `npm run db:studio` | Open Drizzle Studio |
 
-The project has moved beyond a static interface into a full-stack foundation with PostgreSQL, Drizzle ORM, Better Auth, database seeding, automated tests, and CI checks. Product capabilities are being developed incrementally, with a focus on reliable data, clear verification, and useful student–alumni workflows.
+## 🗺️ Roadmap
 
-## Contributing
+- [x] Next.js application foundation
+- [x] PostgreSQL and Drizzle ORM integration
+- [x] Better Auth integration
+- [x] Database migration and seed workflow
+- [x] Vitest and GitHub Actions CI foundation
+- [ ] Complete end-to-end interview submission workflows
+- [ ] Expand verification and moderation workflows
+- [ ] Production-ready alumni discovery and mentorship
+- [ ] Rich search and interview intelligence experiences
 
-Contributions, bug reports, and thoughtful product feedback are welcome.
+## 🤝 Contributing
+
+Contributions, bug reports, and product feedback are welcome.
 
 1. Fork the repository.
-2. Create a focused branch: `git checkout -b feat/your-feature`.
-3. Make your changes and add or update tests where appropriate.
-4. Run the relevant quality checks.
-5. Commit with a descriptive message.
-6. Open a pull request explaining the problem, solution, and any relevant screenshots.
+2. Create a branch: `git checkout -b feat/your-feature`.
+3. Make your changes and add tests where relevant.
+4. Run lint, type checks, tests, and the production build.
+5. Commit with a clear message and open a pull request.
 
-Please avoid including secrets, personal data, or unverified claims in sample content.
+Please do not include credentials, private candidate information, or unverified personal data in sample content.
 
-## Acknowledgements
+## 👨‍💻 Maintainer
 
-Built for students, alumni, and contributors who believe career guidance should be more transparent and accessible.
+**Jyatin Singh** · [GitHub](https://github.com/Jyatin) · [LinkedIn](https://www.linkedin.com/in/jyatinsingh/)
 
-<p align="center">
-  <strong>Beyond the Rumour Mill</strong><br />
-  <sub>Less hearsay. More signal. Better preparation.</sub>
-</p>
+---
+
+<div align="center">
+
+### Beyond the Rumour Mill
+
+**Less hearsay. More signal. Better preparation.**
+
+<sub>Built to make career knowledge more transparent and accessible.</sub>
+
+</div>
