@@ -96,24 +96,47 @@ Students often prepare for interviews using scattered WhatsApp messages, outdate
 > [!NOTE]
 > The repository is actively evolving. Some areas have working application flows and full-stack foundations; other product workflows are still being integrated. The highlights describe the product direction and current foundations, not a claim that every feature is production-ready.
 
-## 🏗️ Architecture
+## 🏗️ Architecture & System Design
 
-The application is built with the Next.js App Router and separates presentation, server-side services, authentication, and persistence.
+The platform follows a **modular monolith** approach: one Next.js application contains the product UI and server-side capabilities, while authentication, persistence, and external integrations remain clearly separated. This keeps development and deployment straightforward without preventing the system from evolving into more specialised services later.
+
+### High-level system design
 
 ```mermaid
 flowchart TB
-    U["Students & Alumni"] --> WEB["Next.js 16 · React 19"]
-    WEB --> APP["App Router & UI Components"]
-    APP --> AUTH["Better Auth"]
-    APP --> SERVER["Server-side Services"]
-    SERVER --> ORM["Drizzle ORM"]
+    ACTOR["Students & Alumni"] --> CLIENT["Browser · Next.js UI"]
+    CLIENT --> ROUTER["Next.js App Router"]
+    ROUTER --> AUTH["Better Auth · Session & Identity"]
+    ROUTER --> SERVER["Server-side Application Logic"]
+    AUTH --> SERVER
+    SERVER --> VALIDATE["Input Validation & Access Checks"]
+    VALIDATE --> ORM["Drizzle ORM"]
     ORM --> DB[("PostgreSQL 16")]
     SERVER --> EMAIL["Resend · Email"]
-    SERVER --> AI["AI Provider Adapter"]
-    SERVER --> BLOB["Vercel Blob · Object Storage"]
-    CI["GitHub Actions"] -.-> WEB
-    CI -.-> DB
+    SERVER --> AI["AI Provider Integration"]
+    SERVER --> STORAGE["Vercel Blob · File Storage"]
+    CI["GitHub Actions CI"] -. "quality gates" .-> ROUTER
 ```
+
+### How a request flows
+
+1. **User interaction:** A student or alumnus opens a page or submits information through the Next.js interface.
+2. **Routing and identity:** The App Router handles the request; Better Auth provides session and authentication context where required.
+3. **Application logic:** Server-side code validates input and applies the relevant access and business rules.
+4. **Data access:** Drizzle ORM reads or writes structured records in PostgreSQL. The database is the primary source of truth.
+5. **External capabilities:** Server-side integrations connect to email delivery, AI services, and object storage when a workflow needs them.
+
+### Key design decisions
+
+| Concern | Design approach |
+| --- | --- |
+| Application structure | Modular monolith using the Next.js App Router; keeps related product logic together |
+| Identity & access | Better Auth manages authentication and session context |
+| Data consistency | PostgreSQL stores relational application data; Drizzle provides typed queries and migrations |
+| Integrations | Email, AI, and file storage are handled through server-side integrations rather than browser-exposed credentials |
+| Maintainability | TypeScript, reusable components, tests, and CI checks help catch regressions |
+
+> **Scope note:** This diagram describes the current application foundation and intended request boundaries. Individual product workflows and integrations are being implemented incrementally; it does not imply that every planned feature is already production-ready.
 
 ### Engineering foundations
 
